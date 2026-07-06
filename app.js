@@ -65,6 +65,10 @@ document.addEventListener('DOMContentLoaded', () => {
         const urlParams = new URLSearchParams(window.location.search);
         if (urlParams.get('public') === 'true') {
             document.documentElement.classList.add('public-mode');
+            const btnProjetos = document.getElementById('btn-toggle-projetos');
+            if (btnProjetos) {
+                btnProjetos.setAttribute('data-tab', 'visao-geral');
+            }
         }
 
         // 0. Invalidação de Cache para Formatação de Título e Financiadores
@@ -4142,22 +4146,6 @@ document.addEventListener('DOMContentLoaded', () => {
                             <span>Média por projeto</span>
                         </div>
                     </div>
-                    
-                    <div class="kpi-card" style="--card-glow: var(--accent);">
-                        <div class="kpi-header">
-                            <span class="kpi-title">Taxa UFSM</span>
-                            <div class="kpi-icon-wrapper" style="background: rgba(139, 92, 246, 0.08);">
-                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" style="width:16px; height:16px;">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
-                                </svg>
-                            </div>
-                        </div>
-                        <div class="kpi-value" id="kpi-taxa-total">R$ 0</div>
-                        <div class="kpi-trend trend-up" id="kpi-taxa-percent">
-                            <span>0% de taxa média</span>
-                        </div>
-                    </div>
-                </div>
 
                 <!-- Gráficos Projetos -->
                 <div class="charts-grid">
