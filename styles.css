@@ -353,10 +353,11 @@ body {
 }
 
 .kpi-value {
-    font-size: 28px;
+    font-size: clamp(20px, 1.85vw, 24px);
     font-weight: 800;
     letter-spacing: -0.5px;
     color: var(--text-primary);
+    white-space: nowrap;
 }
 
 .kpi-trend {
