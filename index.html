@@ -14,6 +14,25 @@
 
     <!-- Biblioteca SheetJS para Leitura de Planilhas Excel (XLSX, XLS) -->
     <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+
+    <style>
+        /* Regras para ocultar guias administrativas em modo público (?public=true) */
+        .public-mode [data-tab="explorador"],
+        .public-mode [data-tab="analise-avancada"],
+        .public-mode [data-tab="importar"],
+        .public-mode [data-tab="preview-wordpress"] {
+            display: none !important;
+        }
+        
+        .public-mode #btn-toggle-projetos svg:last-child {
+            display: none !important;
+        }
+        
+        .public-mode #btn-toggle-projetos {
+            cursor: default !important;
+            pointer-events: none !important;
+        }
+    </style>
 </head>
 
 <body>
