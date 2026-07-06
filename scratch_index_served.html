@@ -1,0 +1,1626 @@
+<!DOCTYPE html>
+<html lang="pt-BR" data-theme="dark">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>UFSM | Painel de Business Intelligence de Projetos</title>
+
+    <!-- CSS Customizado Premium -->
+    <link rel="stylesheet" href="styles.css">
+
+    <!-- Biblioteca Chart.js para Gráficos Avançados -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <!-- Biblioteca SheetJS para Leitura de Planilhas Excel (XLSX, XLS) -->
+    <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+</head>
+
+<body>
+
+    <div class="app-container">
+        <!-- Sidebar de Navegação -->
+        <aside class="sidebar">
+            <div class="brand-section"
+                style="padding: 0; padding-bottom: 0; margin-bottom: 30px; border-bottom: none; display: flex; align-items: center; justify-content: center; width: 100%;">
+                <img src="logo.png" alt="UFSM PROINOVA" class="brand-logo-img">
+            </div>
+
+            <nav class="nav-menu">
+                <!-- Menu Projetos Contratados com Submenus -->
+                <div class="nav-group active" id="nav-group-projetos">
+                    <a class="nav-item group-header" id="btn-toggle-projetos">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
+                        </svg>
+                        <span>Projetos Contratados</span>
+                        <svg class="chevron-icon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                            stroke="currentColor"
+                            style="width: 14px; height: 14px; margin-left: auto; transition: transform var(--transition-fast);">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+                        </svg>
+                    </a>
+                    <div class="nav-submenu" id="submenu-projetos">
+                        <a class="nav-item active" data-tab="visao-geral">
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                                stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M4 6a2 2 0 012-2h2a2 2 0 012 2v4a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v4a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v4a2 2 0 01-2 2H6a2 2 0 01-2-2v-4zM14 16a2 2 0 012-2h2a2 2 0 012 2v4a2 2 0 01-2 2h-2a2 2 0 01-2-2v-4z" />
+                            </svg>
+                            <span>Visão Geral</span>
+                        </a>
+                        <a class="nav-item" data-tab="explorador">
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                                stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M3 10h18M3 14h18m-9-4v8m-7 0h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z" />
+                            </svg>
+                            <span>Explorador de Dados</span>
+                        </a>
+                        <a class="nav-item" data-tab="analise-avancada">
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                                stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
+                            </svg>
+                            <span>Análise Avançada</span>
+                        </a>
+                    </div>
+                </div>
+
+                <a class="nav-item" data-tab="ganhos-pi">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                    </svg>
+                    <span>Ganhos Econômicos PI</span>
+                </a>
+
+                <a class="nav-item" data-tab="propriedade-intelectual">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                    </svg>
+                    <span>Propriedade Intelectual</span>
+                </a>
+
+                <a class="nav-item" data-tab="importar">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12" />
+                    </svg>
+                    <span>Importar CSV</span>
+                </a>
+                <a class="nav-item" data-tab="preview-wordpress">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8" />
+                    </svg>
+                    <span>Publicar no WordPress</span>
+                </a>
+            </nav>
+
+            <div class="sidebar-footer">
+                <div class="theme-toggle-container">
+                    <span class="theme-label">Tema Visual</span>
+                    <button class="theme-btn" id="theme-toggle" title="Alternar Modo Escuro/Claro">
+                        <!-- Icone de Lua (Dark Mode) -->
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"
+                            id="theme-icon-dark" style="display:none;">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z" />
+                        </svg>
+                        <!-- Icone de Sol (Light Mode) -->
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"
+                            id="theme-icon-light">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364-6.364l-.707.707M6.343 17.657l-.707.707m12.728 0l-.707-.707M6.343 6.343l-.707-.707M14.25 12a2.25 2.25 0 11-4.5 0 2.25 2.25 0 014.5 0z" />
+                        </svg>
+                    </button>
+                </div>
+                <div style="font-size: 11px; color: var(--text-muted); text-align: center; font-weight: 500;">
+                    Desenvolvido para Pró-Reitoria
+                </div>
+            </div>
+        </aside>
+
+        <!-- Área de Conteúdo Principal -->
+        <main class="main-content">
+
+            <!-- Cabeçalho de Ações -->
+            <header class="top-header">
+                <div class="header-title">
+                    <h1 id="view-title">Dashboard Executivo</h1>
+                    <p id="view-subtitle">Visão geral do investimento e portfólio de projetos</p>
+                </div>
+                <div
+                    style="display: flex; align-items: center; gap: 12px; font-weight: 600; font-size: 13px; color: var(--text-secondary); background: var(--panel-bg); border: 1px solid var(--panel-border); padding: 8px 16px; border-radius: var(--border-radius-sm);">
+                    <span
+                        style="display:inline-block; width: 8px; height: 8px; background: var(--success); border-radius: 50%; box-shadow: 0 0 8px var(--success);"></span>
+                    <span>Dados Carregados</span>
+                </div>
+            </header>
+
+            <!-- ================= SEÇÃO: VISÃO GERAL ================= -->
+            <section class="dashboard-section active" id="sec-visao-geral">
+
+                <!-- Painel de Filtros Consolidados (Visão Geral) -->
+                <div class="year-filter-panel"
+                    style="display: flex; flex-direction: row; gap: 20px; flex-wrap: wrap; padding: 18px 24px; margin-bottom: 8px;">
+                    <!-- Seletor de Ano -->
+                    <div class="filter-group"
+                        style="display: flex; flex-direction: column; gap: 8px; min-width: 200px; flex: 1;">
+                        <div class="filter-label-group">
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                                stroke="currentColor" class="filter-icon"
+                                style="width: 16px; height: 16px; color: var(--primary);">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 00-2 2z" />
+                            </svg>
+                            <span class="filter-label-text"
+                                style="font-weight: 700; font-size: 12px; text-transform: uppercase; letter-spacing: 0.5px; color: var(--text-secondary);">Ano
+                                de Início:</span>
+                        </div>
+                        <select class="filter-select" id="global-filter-ano" style="width: 100%;">
+                            <option value="">Todos os Anos</option>
+                        </select>
+                    </div>
+
+                    <!-- Seletor de Tipo de Contrato -->
+                    <div class="filter-group"
+                        style="display: flex; flex-direction: column; gap: 8px; min-width: 240px; flex: 1;">
+                        <div class="filter-label-group">
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                                stroke="currentColor" class="filter-icon"
+                                style="width: 16px; height: 16px; color: var(--success);">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                            </svg>
+                            <span class="filter-label-text"
+                                style="font-weight: 700; font-size: 12px; text-transform: uppercase; letter-spacing: 0.5px; color: var(--text-secondary);">Tipo
+                                de Contrato:</span>
+                        </div>
+                        <select class="filter-select" id="global-filter-contrato" style="width: 100%;">
+                            <option value="">Todos os Tipos de Contrato</option>
+                        </select>
+                    </div>
+
+                    <!-- Seletor de Coordenador -->
+                    <div class="filter-group"
+                        style="display: flex; flex-direction: column; gap: 8px; min-width: 240px; flex: 1;">
+                        <div class="filter-label-group">
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                                stroke="currentColor" class="filter-icon"
+                                style="width: 16px; height: 16px; color: var(--info);">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+                            </svg>
+                            <span class="filter-label-text"
+                                style="font-weight: 700; font-size: 12px; text-transform: uppercase; letter-spacing: 0.5px; color: var(--text-secondary);">Coordenador:</span>
+                        </div>
+                        <select class="filter-select" id="global-filter-coordenador" style="width: 100%;">
+                            <option value="">Todos os Coordenadores</option>
+                        </select>
+                    </div>
+                </div>
+
+                <!-- KPI Cards -->
+                <div class="kpi-grid">
+                    <div class="kpi-card" style="--card-glow: var(--primary);">
+                        <div class="kpi-header">
+                            <span class="kpi-title">Projetos Totais</span>
+                            <div class="kpi-icon-wrapper">
+                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                                    stroke="currentColor" style="width:20px; height:20px;">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" />
+                                </svg>
+                            </div>
+                        </div>
+                        <div class="kpi-value" id="kpi-total-projetos">0</div>
+                        <div class="kpi-trend trend-up">
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                                stroke="currentColor" style="width:14px; height:14px;">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6" />
+                            </svg>
+                            <span>Ativos & Concluídos</span>
+                        </div>
+                    </div>
+
+                    <div class="kpi-card" style="--card-glow: var(--success);">
+                        <div class="kpi-header">
+                            <span class="kpi-title">Valor Acumulado</span>
+                            <div class="kpi-icon-wrapper" style="background: rgba(var(--success-rgb), 0.08);">
+                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                                    stroke="currentColor" style="width:20px; height:20px;">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                </svg>
+                            </div>
+                        </div>
+                        <div class="kpi-value" id="kpi-valor-total">R$ 0</div>
+                        <div class="kpi-trend trend-up">
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                                stroke="currentColor" style="width:14px; height:14px;">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6" />
+                            </svg>
+                            <span>Captação Financeira</span>
+                        </div>
+                    </div>
+
+                    <div class="kpi-card" style="--card-glow: var(--info);">
+                        <div class="kpi-header">
+                            <span class="kpi-title">Valor Médio</span>
+                            <div class="kpi-icon-wrapper" style="background: rgba(56, 189, 248, 0.08);">
+                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                                    stroke="currentColor" style="width:20px; height:20px;">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M9 7h6m0 10v-3m-3 3h.01M9 17h.01M9 14h.01M12 14h.01M15 11h.01M12 11h.01M9 11h.01M7 21h10a2 2 0 002-2V5a2 2 0 00-2-2H7a2 2 0 00-2 2v14a2 2 0 002 2z" />
+                                </svg>
+                            </div>
+                        </div>
+                        <div class="kpi-value" id="kpi-valor-medio">R$ 0</div>
+                        <div class="kpi-trend trend-up">
+                            <span>Média por projeto</span>
+                        </div>
+                    </div>
+
+
+                    <div class="kpi-card" style="--card-glow: var(--accent);">
+                        <div class="kpi-header">
+                            <span class="kpi-title">Taxa UFSM</span>
+                            <div class="kpi-icon-wrapper" style="background: rgba(139, 92, 246, 0.08);">
+                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                                    stroke="currentColor" style="width:20px; height:20px;">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
+                                </svg>
+                            </div>
+                        </div>
+                        <div class="kpi-value" id="kpi-taxa-total">R$ 0</div>
+                        <div class="kpi-trend trend-up" id="kpi-taxa-percent">
+                            <span>0% de taxa média</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Gráficos Principais -->
+                <div class="charts-grid">
+                    <div class="chart-card chart-card-full">
+                        <div class="chart-header">
+                            <div>
+                                <h3 id="titulo-evolucao">Evolução Anual: Volume e Captação</h3>
+                                <div id="subtitulo-evolucao" style="font-size:12px; color:var(--text-secondary);">Ano de
+                                    início do contrato</div>
+                            </div>
+                            <!-- Seletor de Período (Mensal / Trimestral) - Oculto por Padrão -->
+                            <div class="chart-toggle-group" id="chart-period-toggle" style="display: none;">
+                                <button class="chart-toggle-btn active" data-period="mensal">Mensal</button>
+                                <button class="chart-toggle-btn" data-period="trimestral">Trimestral</button>
+                            </div>
+                        </div>
+                        <div class="chart-wrapper">
+                            <canvas id="chart-evolucao-anual"></canvas>
+                        </div>
+                    </div>
+
+                    <div class="chart-card">
+                        <div class="chart-header">
+                            <h3>Distribuição por Tipo de Projeto</h3>
+                        </div>
+                        <div class="chart-wrapper">
+                            <canvas id="chart-tipo-projeto"></canvas>
+                        </div>
+                    </div>
+
+                    <div class="chart-card">
+                        <div class="chart-header">
+                            <h3>Investimento por Fundação de Apoio</h3>
+                            <div style="font-size:12px; color:var(--text-secondary);">Valores acumulados em R$</div>
+                        </div>
+                        <div class="chart-wrapper">
+                            <canvas id="chart-valores-fundacao"></canvas>
+                        </div>
+                    </div>
+
+                    <div class="chart-card chart-card-full">
+                        <div class="chart-header">
+                            <h3>Top 10 Unidades e Centros por Investimento</h3>
+                            <div style="font-size:12px; color:var(--text-secondary);">Valores agregados em R$</div>
+                        </div>
+                        <div class="chart-wrapper">
+                            <canvas id="chart-unidades-investimento"></canvas>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- ================= SEÇÃO: EXPLORADOR DE DADOS ================= -->
+            <section class="dashboard-section" id="sec-explorador">
+                <!-- Painel de Filtros Consolidados (Explorador de Dados) -->
+                <div class="year-filter-panel"
+                    style="display: flex; flex-direction: row; gap: 20px; flex-wrap: wrap; padding: 18px 24px; margin-bottom: 24px;">
+
+                    <!-- Campo de Busca -->
+                    <div class="filter-group"
+                        style="display: flex; flex-direction: column; gap: 8px; min-width: 280px; flex: 2;">
+                        <div class="filter-label-group">
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                                stroke="currentColor" class="filter-icon"
+                                style="width: 16px; height: 16px; color: var(--primary);">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                            </svg>
+                            <span class="filter-label-text"
+                                style="font-weight: 700; font-size: 12px; text-transform: uppercase; letter-spacing: 0.5px; color: var(--text-secondary);">Buscar
+                                Projeto:</span>
+                        </div>
+                        <input type="text" class="search-input" id="search-box"
+                            placeholder="Buscar por Título, Coordenador, Fiscal ou Partícipes..."
+                            style="width: 100%; height: 48px; padding-left: 16px;">
+                    </div>
+
+                    <!-- Seletor de Ano -->
+                    <div class="filter-group"
+                        style="display: flex; flex-direction: column; gap: 8px; min-width: 140px; flex: 1;">
+                        <div class="filter-label-group">
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                                stroke="currentColor" class="filter-icon"
+                                style="width: 16px; height: 16px; color: var(--primary);">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 00-2 2z" />
+                            </svg>
+                            <span class="filter-label-text"
+                                style="font-weight: 700; font-size: 12px; text-transform: uppercase; letter-spacing: 0.5px; color: var(--text-secondary);">Ano
+                                de Início:</span>
+                        </div>
+                        <select class="filter-select" id="filter-ano" style="width: 100%;">
+                            <option value="">Todos os Anos</option>
+                        </select>
+                    </div>
+
+                    <!-- Seletor de Tipo de Contrato -->
+                    <div class="filter-group"
+                        style="display: flex; flex-direction: column; gap: 8px; min-width: 220px; flex: 1.5;">
+                        <div class="filter-label-group">
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                                stroke="currentColor" class="filter-icon"
+                                style="width: 16px; height: 16px; color: var(--success);">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                            </svg>
+                            <span class="filter-label-text"
+                                style="font-weight: 700; font-size: 12px; text-transform: uppercase; letter-spacing: 0.5px; color: var(--text-secondary);">Tipo
+                                de Contrato:</span>
+                        </div>
+                        <select class="filter-select" id="filter-contrato" style="width: 100%;">
+                            <option value="">Todos os Tipos de Contrato</option>
+                        </select>
+                    </div>
+
+                    <!-- Seletor de Unidade -->
+                    <div class="filter-group"
+                        style="display: flex; flex-direction: column; gap: 8px; min-width: 180px; flex: 1.5;">
+                        <div class="filter-label-group">
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                                stroke="currentColor" class="filter-icon"
+                                style="width: 16px; height: 16px; color: var(--info);">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
+                            </svg>
+                            <span class="filter-label-text"
+                                style="font-weight: 700; font-size: 12px; text-transform: uppercase; letter-spacing: 0.5px; color: var(--text-secondary);">Unidade
+                                / Centro:</span>
+                        </div>
+                        <select class="filter-select" id="filter-unidade" style="width: 100%;">
+                            <option value="">Todas as Unidades</option>
+                        </select>
+                    </div>
+
+                    <!-- Seletor de Coordenador -->
+                    <div class="filter-group"
+                        style="display: flex; flex-direction: column; gap: 8px; min-width: 200px; flex: 1.5;">
+                        <div class="filter-label-group">
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                                stroke="currentColor" class="filter-icon"
+                                style="width: 16px; height: 16px; color: var(--accent);">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+                            </svg>
+                            <span class="filter-label-text"
+                                style="font-weight: 700; font-size: 12px; text-transform: uppercase; letter-spacing: 0.5px; color: var(--text-secondary);">Coordenador:</span>
+                        </div>
+                        <select class="filter-select" id="filter-coordenador" style="width: 100%;">
+                            <option value="">Todos os Coordenadores</option>
+                        </select>
+                    </div>
+                </div>
+
+                <!-- Tabela de Dados -->
+                <div class="table-card">
+                    <div class="table-responsive">
+                        <table class="modern-table" id="projects-table">
+                            <thead>
+                                <tr>
+                                    <th style="width: 80px;" data-sort="id">ID <span class="sort-icon">↕</span></th>
+                                    <th data-sort="titulo">Projeto / Título <span class="sort-icon">↕</span></th>
+                                    <th data-sort="coordenador">Coordenador <span class="sort-icon">↕</span></th>
+                                    <th style="width: 120px;" data-sort="unidade">Unidade <span
+                                            class="sort-icon">↕</span></th>
+                                    <th style="width: 140px;" data-sort="tipo_projeto_norm">Tipo <span
+                                            class="sort-icon">↕</span></th>
+                                    <th style="width: 140px;" data-sort="valor">Valor (R$) <span
+                                            class="sort-icon">↕</span></th>
+                                    <th style="width: 140px;" data-sort="situacao_norm">Situação <span
+                                            class="sort-icon">↕</span></th>
+                                </tr>
+                            </thead>
+                            <tbody id="table-body">
+                                <!-- Preenchido dinamicamente via JS -->
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <div class="table-footer">
+                        <div class="pagination-info" id="pagination-info">
+                            Mostrando 0 a 0 de 0 projetos
+                        </div>
+                        <div class="pagination-controls" id="pagination-controls">
+                            <!-- Preenchido dinamicamente via JS -->
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- ================= SEÇÃO: ANÁLISE AVANÇADA ================= -->
+            <section class="dashboard-section" id="sec-analise-avancada">
+                <!-- Filtros Consolidados -->
+                <div class="year-filter-panel"
+                    style="display: flex; flex-direction: row; gap: 20px; flex-wrap: wrap; padding: 18px 24px; margin-bottom: 24px;">
+                    <!-- Seletor de Ano -->
+                    <div class="filter-group"
+                        style="display: flex; flex-direction: column; gap: 8px; min-width: 150px; flex: 1;">
+                        <div class="filter-label-group">
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                                stroke="currentColor" style="width: 16px; height: 16px; color: var(--success);">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 00-2 2z" />
+                            </svg>
+                            <span class="filter-label-text"
+                                style="font-weight: 700; font-size: 12px; text-transform: uppercase; letter-spacing: 0.5px; color: var(--text-secondary);">Filtrar
+                                por Ano:</span>
+                        </div>
+                        <select class="filter-select" id="analise-filter-ano" style="width: 100%; height: 38px;">
+                            <option value="">Todos os Anos</option>
+                        </select>
+                    </div>
+
+                    <!-- Seletor de Tipo de Contrato -->
+                    <div class="filter-group"
+                        style="display: flex; flex-direction: column; gap: 8px; min-width: 220px; flex: 1.5;">
+                        <div class="filter-label-group">
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                                stroke="currentColor" style="width: 16px; height: 16px; color: var(--success);">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                            </svg>
+                            <span class="filter-label-text"
+                                style="font-weight: 700; font-size: 12px; text-transform: uppercase; letter-spacing: 0.5px; color: var(--text-secondary);">Tipo
+                                de Contrato:</span>
+                        </div>
+                        <select class="filter-select" id="analise-filter-contrato" style="width: 100%; height: 38px;">
+                            <option value="">Todos os Tipos de Contrato</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="charts-grid">
+                    <!-- Maiores Captadores de Recursos -->
+                    <div class="chart-card">
+                        <div class="chart-header">
+                            <h3>Top Coordenadores (Captação)</h3>
+                            <div style="font-size:12px; color:var(--text-secondary);">Soma dos valores dos contratos
+                            </div>
+                        </div>
+                        <div class="rank-list" id="rank-coordenadores">
+                            <!-- Preenchido dinamicamente via JS -->
+                        </div>
+                    </div>
+
+                    <!-- Maiores Financiadores/Edital -->
+                    <div class="chart-card">
+                        <div class="chart-header">
+                            <h3>Principais Fontes e Financiadores</h3>
+                            <div style="font-size:12px; color:var(--text-secondary);">Participação e editais</div>
+                        </div>
+                        <div class="rank-list" id="rank-financiadores">
+                            <!-- Preenchido dinamicamente via JS -->
+                        </div>
+                    </div>
+
+                    <!-- Métricas por Fundação e Taxas -->
+                    <div class="chart-card chart-card-full">
+                        <div class="chart-header">
+                            <h3>Distribuição por Fundação de Apoio</h3>
+                        </div>
+                        <div class="chart-wrapper">
+                            <canvas id="chart-fundacao-projetos"></canvas>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- ================= SEÇÃO: GANHOS ECONÔMICOS PI ================= -->
+            <section class="dashboard-section" id="sec-ganhos-pi">
+                <!-- Filtros Consolidados -->
+                <div class="year-filter-panel"
+                    style="display: flex; flex-direction: row; gap: 20px; flex-wrap: wrap; padding: 18px 24px; margin-bottom: 8px;">
+                    <!-- Busca Geral -->
+                    <div class="filter-group"
+                        style="display: flex; flex-direction: column; gap: 8px; min-width: 240px; flex: 2;">
+                        <div class="filter-label-group">
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                                stroke="currentColor" style="width: 16px; height: 16px; color: var(--primary);">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                            </svg>
+                            <span class="filter-label-text"
+                                style="font-weight: 700; font-size: 12px; text-transform: uppercase; letter-spacing: 0.5px; color: var(--text-secondary);">Buscar
+                                Ganhos:</span>
+                        </div>
+                        <div class="search-input-wrapper"
+                            style="margin: 0; padding: 0; background: none; border: none; height: 38px;">
+                            <input type="text" class="search-input" id="ganhos-search-box"
+                                style="width: 100%; height: 100%;"
+                                placeholder="Buscar por Descrição/Empresa ou Departamento...">
+                        </div>
+                    </div>
+                    <!-- Seletor de Ano -->
+                    <div class="filter-group"
+                        style="display: flex; flex-direction: column; gap: 8px; min-width: 150px; flex: 1;">
+                        <div class="filter-label-group">
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                                stroke="currentColor" style="width: 16px; height: 16px; color: var(--success);">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 00-2 2z" />
+                            </svg>
+                            <span class="filter-label-text"
+                                style="font-weight: 700; font-size: 12px; text-transform: uppercase; letter-spacing: 0.5px; color: var(--text-secondary);">Ano:</span>
+                        </div>
+                        <select class="filter-select" id="ganhos-filter-ano" style="width: 100%; height: 38px;">
+                            <option value="">Todos os Anos</option>
+                        </select>
+                    </div>
+                    <!-- Seletor de Departamento -->
+                    <div class="filter-group"
+                        style="display: flex; flex-direction: column; gap: 8px; min-width: 220px; flex: 1.5;">
+                        <div class="filter-label-group">
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                                stroke="currentColor" style="width: 16px; height: 16px; color: var(--info);">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
+                            </svg>
+                            <span class="filter-label-text"
+                                style="font-weight: 700; font-size: 12px; text-transform: uppercase; letter-spacing: 0.5px; color: var(--text-secondary);">Departamento:</span>
+                        </div>
+                        <select class="filter-select" id="ganhos-filter-depto" style="width: 100%; height: 38px;">
+                            <option value="">Todos os Departamentos</option>
+                        </select>
+                    </div>
+                    <!-- Seletor de Fundação -->
+                    <div class="filter-group"
+                        style="display: flex; flex-direction: column; gap: 8px; min-width: 150px; flex: 1;">
+                        <div class="filter-label-group">
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                                stroke="currentColor" style="width: 16px; height: 16px; color: var(--accent);">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M8 14v3m4-3v3m4-3v3M3 21h18M3 10h18M3 7l9-4 9 4M4 10h16v11H4V10z" />
+                            </svg>
+                            <span class="filter-label-text"
+                                style="font-weight: 700; font-size: 12px; text-transform: uppercase; letter-spacing: 0.5px; color: var(--text-secondary);">Fundação:</span>
+                        </div>
+                        <select class="filter-select" id="ganhos-filter-fundacao" style="width: 100%; height: 38px;">
+                            <option value="">Todas as Fundações</option>
+                        </select>
+                    </div>
+                </div>
+
+                <!-- KPI Cards -->
+                <div class="kpi-grid">
+                    <div class="kpi-card" style="--card-glow: var(--primary);">
+                        <div class="kpi-header">
+                            <span class="kpi-title">Ganhos Totais Acumulados</span>
+                            <div class="kpi-icon-wrapper">
+                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                                    stroke="currentColor" style="width:20px; height:20px;">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                </svg>
+                            </div>
+                        </div>
+                        <div class="kpi-value" id="kpi-ganhos-total">R$ 0</div>
+                        <div class="kpi-trend trend-up">
+                            <span>Soma do Valor Total Recebido</span>
+                        </div>
+                    </div>
+
+                    <div class="kpi-card" style="--card-glow: var(--success);">
+                        <div class="kpi-header">
+                            <span class="kpi-title">Retorno Central UFSM</span>
+                            <div class="kpi-icon-wrapper" style="background: rgba(var(--success-rgb), 0.08);">
+                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                                    stroke="currentColor" style="width:20px; height:20px;">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
+                                </svg>
+                            </div>
+                        </div>
+                        <div class="kpi-value" id="kpi-ganhos-ufsm">R$ 0</div>
+                        <div class="kpi-trend trend-up" id="kpi-ganhos-ufsm-percent">
+                            <span>0% do valor total</span>
+                        </div>
+                    </div>
+
+                    <div class="kpi-card" style="--card-glow: var(--info);">
+                        <div class="kpi-header">
+                            <span class="kpi-title">Repasse Departamentos</span>
+                            <div class="kpi-icon-wrapper" style="background: rgba(56, 189, 248, 0.08);">
+                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                                    stroke="currentColor" style="width:20px; height:20px;">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
+                                </svg>
+                            </div>
+                        </div>
+                        <div class="kpi-value" id="kpi-ganhos-depto">R$ 0</div>
+                        <div class="kpi-trend trend-up" id="kpi-ganhos-depto-percent">
+                            <span>0% do valor total</span>
+                        </div>
+                    </div>
+
+                    <div class="kpi-card" style="--card-glow: var(--accent);">
+                        <div class="kpi-header">
+                            <span class="kpi-title">Repasse Inventores</span>
+                            <div class="kpi-icon-wrapper" style="background: rgba(139, 92, 246, 0.08);">
+                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                                    stroke="currentColor" style="width:20px; height:20px;">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+                                </svg>
+                            </div>
+                        </div>
+                        <div class="kpi-value" id="kpi-ganhos-inventor">R$ 0</div>
+                        <div class="kpi-trend trend-up" id="kpi-ganhos-inventor-percent">
+                            <span>0% do valor total</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Gráficos Principais -->
+                <div class="charts-grid">
+                    <!-- Evolução Temporal de repasses -->
+                    <div class="chart-card chart-card-full">
+                        <div class="chart-header">
+                            <div>
+                                <h3>Evolução de Ganhos e Distribuição Anual</h3>
+                                <div style="font-size:12px; color:var(--text-secondary);">Ano do recebimento do recurso
+                                </div>
+                            </div>
+                        </div>
+                        <div class="chart-wrapper">
+                            <canvas id="chart-ganhos-evolucao"></canvas>
+                        </div>
+                    </div>
+
+                    <!-- Distribuição de partilha (Doughnut) -->
+                    <div class="chart-card">
+                        <div class="chart-header">
+                            <h3>Distribuição de Repasses (Partilha Geral)</h3>
+                            <div style="font-size:12px; color:var(--text-secondary);">Valores acumulados em R$</div>
+                        </div>
+                        <div class="chart-wrapper">
+                            <canvas id="chart-ganhos-partilha"></canvas>
+                        </div>
+                    </div>
+
+                    <!-- Repasses por Departamento -->
+                    <div class="chart-card">
+                        <div class="chart-header">
+                            <h3>Maiores Repasses por Departamento</h3>
+                            <div style="font-size:12px; color:var(--text-secondary);">Valores agregados em R$</div>
+                        </div>
+                        <div class="chart-wrapper">
+                            <canvas id="chart-ganhos-depto-bar"></canvas>
+                        </div>
+                    </div>
+
+                    <!-- Top Clientes / Licenciados Pagadores -->
+                    <div class="chart-card chart-card-full">
+                        <div class="chart-header">
+                            <h3>Principais Empresas e Fontes de Royalties (Top 5)</h3>
+                            <div style="font-size:12px; color:var(--text-secondary);">Ranking de captação total de
+                                propriedade intelectual</div>
+                        </div>
+                        <div class="rank-list" id="rank-ganhos-empresas" style="padding: 10px 0;">
+                            <!-- Preenchido dinamicamente via JS -->
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Tabela de Transações -->
+                <div class="table-card" style="margin-top: 24px;">
+                    <div class="chart-header" style="border-bottom: 1px solid var(--panel-border); padding: 18px 24px;">
+                        <h3>Detalhamento dos Ganhos Econômicos PI</h3>
+                        <div style="font-size:12px; color:var(--text-secondary);">Listagem de todos os lançamentos
+                            individuais de royalties</div>
+                    </div>
+                    <div class="table-responsive">
+                        <table class="modern-table" id="ganhos-table">
+                            <thead>
+                                <tr>
+                                    <th style="width: 100px;" data-sort="ano">Data <span class="sort-icon">↕</span></th>
+                                    <th data-sort="descricao">Descrição / Empresa <span class="sort-icon">↕</span></th>
+                                    <th data-sort="departamento">Departamento <span class="sort-icon">↕</span></th>
+                                    <th style="width: 110px;" data-sort="fundacao">Fundação <span
+                                            class="sort-icon">↕</span></th>
+                                    <th style="width: 140px; text-align: right;" data-sort="valor_total">Valor Total
+                                        <span class="sort-icon">↕</span>
+                                    </th>
+                                    <th style="width: 130px; text-align: right;" data-sort="valor_ufsm">Parc. UFSM <span
+                                            class="sort-icon">↕</span></th>
+                                    <th style="width: 130px; text-align: right;" data-sort="valor_departamento">Parc.
+                                        Depto <span class="sort-icon">↕</span></th>
+                                    <th style="width: 130px; text-align: right;" data-sort="valor_inventor">Parc.
+                                        Inventor <span class="sort-icon">↕</span></th>
+                                </tr>
+                            </thead>
+                            <tbody id="ganhos-table-body">
+                                <!-- Preenchido dinamicamente via JS -->
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <div class="table-footer">
+                        <div class="pagination-info" id="ganhos-pagination-info">
+                            Mostrando 0 a 0 de 0 lançamentos
+                        </div>
+                        <div class="pagination-controls" id="ganhos-pagination-controls">
+                            <!-- Preenchido dinamicamente via JS -->
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- ================= SEÇÃO: PROPRIEDADE INTELECTUAL ================= -->
+            <section class="dashboard-section" id="sec-propriedade-intelectual">
+                <!-- Painel de Filtros Consolidados -->
+                <div class="year-filter-panel"
+                    style="display: flex; flex-direction: row; gap: 20px; flex-wrap: wrap; padding: 18px 24px; margin-bottom: 8px;">
+                    <!-- Seletor de Ano -->
+                    <div class="filter-group"
+                        style="display: flex; flex-direction: column; gap: 8px; min-width: 180px; flex: 1;">
+                        <div class="filter-label-group">
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                                stroke="currentColor" style="width: 16px; height: 16px; color: var(--success);">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 00-2 2z" />
+                            </svg>
+                            <span class="filter-label-text"
+                                style="font-weight: 700; font-size: 12px; text-transform: uppercase; letter-spacing: 0.5px; color: var(--text-secondary);">Ano de Depósito:</span>
+                        </div>
+                        <select class="filter-select" id="pi-filter-ano" style="width: 100%; height: 38px;">
+                            <option value="">Todos os Anos</option>
+                        </select>
+                    </div>
+                </div>
+
+                <!-- KPI Cards -->
+                <div class="kpi-grid" style="grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));">
+                    <!-- Card Total -->
+                    <div class="kpi-card" style="--card-glow: var(--primary);">
+                        <div class="kpi-header">
+                            <span class="kpi-title">Total de Pedidos</span>
+                            <div class="kpi-icon-wrapper">
+                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                                    stroke="currentColor" style="width:20px; height:20px;">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
+                                </svg>
+                            </div>
+                        </div>
+                        <div class="kpi-value" id="kpi-pi-total">0</div>
+                        <div class="kpi-trend trend-up">
+                            <span>Pedidos depositados acumulados</span>
+                        </div>
+                    </div>
+                    <!-- Card Patentes -->
+                    <div class="kpi-card" style="--card-glow: var(--success);">
+                        <div class="kpi-header">
+                            <span class="kpi-title">Patentes</span>
+                            <div class="kpi-icon-wrapper" style="background: rgba(var(--success-rgb), 0.08);">
+                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                                    stroke="currentColor" style="width:20px; height:20px; color: var(--success);">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M9.663 17h4.673M12 3v1m6.364.364l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 113.536 0V21h2v-2.121z" />
+                                </svg>
+                            </div>
+                        </div>
+                        <div class="kpi-value" id="kpi-pi-patentes">0</div>
+                        <div class="kpi-trend trend-up">
+                            <span>Patentes (PI, MU, CA, Exterior)</span>
+                        </div>
+                    </div>
+                    <!-- Card Programas de Computador -->
+                    <div class="kpi-card" style="--card-glow: var(--info);">
+                        <div class="kpi-header">
+                            <span class="kpi-title">Progs. de Computador</span>
+                            <div class="kpi-icon-wrapper" style="background: rgba(var(--info-rgb), 0.08);">
+                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                                    stroke="currentColor" style="width:20px; height:20px; color: var(--info);">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4" />
+                                </svg>
+                            </div>
+                        </div>
+                        <div class="kpi-value" id="kpi-pi-software">0</div>
+                        <div class="kpi-trend trend-up">
+                            <span>Programas de computador registrados</span>
+                        </div>
+                    </div>
+                    <!-- Card Desenhos Industriais -->
+                    <div class="kpi-card" style="--card-glow: var(--warning);">
+                        <div class="kpi-header">
+                            <span class="kpi-title">Desenhos Industriais</span>
+                            <div class="kpi-icon-wrapper" style="background: rgba(251, 191, 36, 0.08);">
+                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                                    stroke="currentColor" style="width:20px; height:20px; color: #fbbf24;">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                                </svg>
+                            </div>
+                        </div>
+                        <div class="kpi-value" id="kpi-pi-desenho">0</div>
+                        <div class="kpi-trend trend-up">
+                            <span>Desenhos industriais registrados</span>
+                        </div>
+                    </div>
+                    <!-- Card Marcas -->
+                    <div class="kpi-card" style="--card-glow: #e879f9;">
+                        <div class="kpi-header">
+                            <span class="kpi-title">Marcas</span>
+                            <div class="kpi-icon-wrapper" style="background: rgba(232, 121, 249, 0.08);">
+                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                                    stroke="currentColor" style="width:20px; height:20px; color: #e879f9;">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M7 7h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                                </svg>
+                            </div>
+                        </div>
+                        <div class="kpi-value" id="kpi-pi-marcas">0</div>
+                        <div class="kpi-trend trend-up">
+                            <span>Marcas registradas</span>
+                        </div>
+                    </div>
+                    <!-- Card Cultivares -->
+                    <div class="kpi-card" style="--card-glow: #34d399;">
+                        <div class="kpi-header">
+                            <span class="kpi-title">Cultivares</span>
+                            <div class="kpi-icon-wrapper" style="background: rgba(52, 211, 153, 0.08);">
+                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                                    stroke="currentColor" style="width:20px; height:20px; color: #34d399;">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
+                                </svg>
+                            </div>
+                        </div>
+                        <div class="kpi-value" id="kpi-pi-cultivares">0</div>
+                        <div class="kpi-trend trend-up">
+                            <span>Cultivares protegidas</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Grafico e Tabela de Dados -->
+                <div class="dashboard-grid" style="margin-top: 20px;">
+                    <!-- Gráfico de Evolução -->
+                    <div class="chart-card" style="flex: 2;">
+                        <div class="chart-header">
+                            <div>
+                                <h3 style="font-size: 18px; font-weight: 700;">Evolução Temporal de Depósitos</h3>
+                                <div style="font-size: 12px; color: var(--text-secondary); margin-top: 4px;">Pedidos de propriedade intelectual por tipo ao longo dos anos</div>
+                            </div>
+                        </div>
+                        <div class="chart-wrapper" style="height: 380px;">
+                            <canvas id="chart-pi-trends"></canvas>
+                        </div>
+                    </div>
+                    
+                    <!-- Tabela de Detalhes -->
+                    <div class="chart-card" style="flex: 1.2; display: flex; flex-direction: column;">
+                        <div class="chart-header" style="margin-bottom: 12px;">
+                            <div>
+                                <h3 style="font-size: 18px; font-weight: 700;">Detalhamento Anual</h3>
+                                <div style="font-size: 12px; color: var(--text-secondary); margin-top: 4px;">Valores anuais consolidados dos depósitos</div>
+                            </div>
+                        </div>
+                        <div class="table-container" style="flex-grow: 1; overflow-y: auto; max-height: 380px;">
+                            <table class="data-table" id="pi-details-table" style="font-size: 12px;">
+                                <thead>
+                                    <tr>
+                                        <th>Ano</th>
+                                        <th>Patentes</th>
+                                        <th>Softwares</th>
+                                        <th>Desenhos</th>
+                                        <th>Marcas</th>
+                                        <th>Cultivares</th>
+                                        <th style="font-weight: 700; color: var(--text-primary);">Total</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="pi-details-table-body">
+                                    <!-- Preenchido dinamicamente via JS -->
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- ================= SEÇÃO: IMPORTAR CSV ================= -->
+            <section class="dashboard-section" id="sec-importar">
+                <div class="import-grid">
+
+                    <!-- Coluna 1: Fontes de Dados -->
+                    <div class="chart-card">
+                        <div class="chart-header" style="margin-bottom: 12px;">
+                            <div>
+                                <h3 style="font-size: 18px; font-weight: 700;">Fontes de Dados Ativas</h3>
+                                <div style="font-size:12px; color:var(--text-secondary); margin-top: 4px;">Gerencie as
+                                    origens dos dados carregados nos menus.</div>
+                            </div>
+                        </div>
+
+                        <div class="source-list" style="display: flex; flex-direction: column; gap: 20px;">
+                            <!-- Menu Projetos Contratados Source -->
+                            <div class="source-item-card"
+                                style="background: rgba(0, 0, 0, 0.15); border: 1px solid var(--panel-border); border-radius: var(--border-radius-sm); padding: 18px; display: flex; flex-direction: column; gap: 14px;">
+                                <div
+                                    style="display: flex; align-items: center; justify-content: space-between; gap: 12px;">
+                                    <div style="display: flex; align-items: center; gap: 10px;">
+                                        <div
+                                            style="width: 36px; height: 36px; border-radius: 8px; background: rgba(var(--primary-rgb), 0.08); display: flex; align-items: center; justify-content: center; color: var(--primary);">
+                                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                                                stroke="currentColor" style="width: 20px; height: 20px;">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                    d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
+                                            </svg>
+                                        </div>
+                                        <div>
+                                            <h4 style="font-size: 14px; font-weight: 700; color: var(--text-primary);">
+                                                Menu: Projetos Contratados</h4>
+                                            <span style="font-size: 11px; color: var(--text-muted);">Uso: Visão Geral,
+                                                Explorador, Análise</span>
+                                        </div>
+                                    </div>
+                                    <span class="badge" id="source-status-badge"
+                                        style="background: rgba(var(--primary-rgb), 0.12); color: var(--primary); font-size: 10px; font-weight: 700;">Dados
+                                        Padrão</span>
+                                </div>
+
+                                <!-- Fonte Original Mapeada -->
+                                <div
+                                    style="background: rgba(var(--primary-rgb), 0.03); border: 1px solid rgba(var(--primary-rgb), 0.1); border-radius: var(--border-radius-sm); padding: 10px 14px; font-size: 12px; line-height: 1.5; color: var(--text-secondary); display: flex; flex-direction: column; gap: 4px;">
+                                    <span
+                                        style="font-size: 10px; font-weight: 800; text-transform: uppercase; color: var(--primary); letter-spacing: 0.5px;">Fonte
+                                        de Dados Padrão:</span>
+                                    <div style="display: flex; align-items: flex-start; gap: 6px;">
+                                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                                            stroke="currentColor"
+                                            style="width: 14px; height: 14px; color: var(--success); flex-shrink:0; margin-top: 2px;">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+                                        </svg>
+                                        <a href="https://docs.google.com/spreadsheets/d/1PVyTdBjFmtqMMFt4OqiSHhofmOPx15Re_8ddEiNro6U/edit?gid=409266791#gid=409266791"
+                                            target="_blank"
+                                            style="color: var(--text-primary); text-decoration: underline; font-weight: 600; text-overflow: ellipsis; overflow: hidden; white-space: nowrap; max-width: 100%; display: block;"
+                                            title="Acesse a Planilha Google Sheets de Origem">
+                                            Planilha Google Sheets (Aba Projetos)
+                                        </a>
+                                    </div>
+                                    <span style="font-size: 10.5px; color: var(--text-muted);">Os dados pré-carregados
+                                        do painel são alimentados a partir desta planilha online.</span>
+                                </div>
+
+                                <div
+                                    style="display: flex; flex-direction: column; gap: 6px; border-top: 1px solid var(--panel-border); padding-top: 12px;">
+                                    <span
+                                        style="font-size: 11px; font-weight: 700; text-transform: uppercase; color: var(--text-muted); letter-spacing: 0.5px;">Selecione
+                                        a Origem Ativa:</span>
+                                    <div style="display: flex; flex-direction: column; gap: 8px; margin-top: 4px;">
+                                        <label
+                                            style="display: flex; align-items: center; gap: 10px; font-size: 13px; color: var(--text-secondary); cursor: pointer;">
+                                            <input type="radio" name="source-type" value="default" checked
+                                                style="accent-color: var(--primary);">
+                                            <span>Banco de Dados Padrão (Local UFSM)</span>
+                                        </label>
+                                        <label
+                                            style="display: flex; align-items: center; gap: 10px; font-size: 13px; color: var(--text-secondary); cursor: pointer;">
+                                            <input type="radio" name="source-type" value="sheet"
+                                                style="accent-color: var(--primary);">
+                                            <span>Planilha Google Sheets Online</span>
+                                        </label>
+                                        <label
+                                            style="display: flex; align-items: center; gap: 10px; font-size: 13px; color: var(--text-secondary); cursor: pointer;">
+                                            <input type="radio" name="source-type" value="upload"
+                                                style="accent-color: var(--primary);">
+                                            <span>Arquivo Local Carregado (CSV / XLSX)</span>
+                                        </label>
+                                    </div>
+                                </div>
+
+                                <!-- Input Google Sheets (Exibido sob seleção) -->
+                                <div id="sheet-url-container"
+                                    style="display: none; flex-direction: column; gap: 8px; border-top: 1px dashed var(--panel-border); padding-top: 12px;">
+                                    <div style="display: flex; justify-content: space-between; align-items: center;">
+                                        <span
+                                            style="font-size: 11px; font-weight: 700; text-transform: uppercase; color: var(--text-muted); letter-spacing: 0.5px;">Link
+                                            do Google Planilhas:</span>
+                                        <a href="https://docs.google.com/spreadsheets/d/1PVyTdBjFmtqMMFt4OqiSHhofmOPx15Re_8ddEiNro6U/edit?gid=409266791#gid=409266791"
+                                            target="_blank"
+                                            style="font-size: 11px; color: var(--info); text-decoration: underline; display: flex; align-items: center; gap: 4px;">
+                                            Planilha Oficial
+                                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                                                stroke="currentColor" style="width: 10px; height: 10px;">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                    d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+                                            </svg>
+                                        </a>
+                                    </div>
+                                    <div style="display: flex; gap: 8px;">
+                                        <input type="text" id="input-sheet-url" class="control-input"
+                                            style="flex-grow: 1; height: 38px; font-size: 12px;"
+                                            placeholder="Cole o link de compartilhamento da planilha do Google...">
+                                        <button class="pagination-btn" id="btn-sync-sheet"
+                                            style="height: 38px; background: rgba(var(--primary-rgb), 0.1); border-color: rgba(var(--primary-rgb), 0.2); color: var(--primary); font-weight: 700; font-size: 12px; padding: 0 14px;">
+                                            Sincronizar
+                                        </button>
+                                    </div>
+                                    <span
+                                        style="font-size: 11px; color: var(--text-muted); line-height: 1.4;">Certifique-se
+                                        de que a planilha está compartilhada como <strong>"Qualquer pessoa com o link
+                                            pode ler"</strong> para que a importação funcione perfeitamente.</span>
+                                </div>
+
+                                <!-- Info Arquivo Carregado (Exibido sob seleção) -->
+                                <div id="uploaded-info-container"
+                                    style="display: none; flex-direction: column; gap: 6px; border-top: 1px dashed var(--panel-border); padding-top: 12px;">
+                                    <span
+                                        style="font-size: 11px; font-weight: 700; text-transform: uppercase; color: var(--text-muted); letter-spacing: 0.5px;">Arquivo
+                                        Local Ativo:</span>
+                                    <div
+                                        style="display: flex; align-items: center; justify-content: space-between; background: rgba(255,255,255,0.03); border: 1px solid var(--panel-border); padding: 10px 14px; border-radius: var(--border-radius-sm);">
+                                        <div style="display: flex; align-items: center; gap: 8px;">
+                                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                                                stroke="currentColor"
+                                                style="width: 16px; height: 16px; color: var(--success);">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                    d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                                            </svg>
+                                            <span id="uploaded-file-name"
+                                                style="font-size: 12px; font-weight: 600; color: var(--text-primary); text-overflow: ellipsis; overflow: hidden; white-space: nowrap; max-width: 180px;">Nenhum
+                                                arquivo carregado</span>
+                                        </div>
+                                        <span id="uploaded-file-rows"
+                                            style="font-size: 11px; color: var(--text-muted);">0 registros</span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Menu Ganhos Econômicos PI Source -->
+                            <div class="source-item-card"
+                                style="background: rgba(0, 0, 0, 0.15); border: 1px solid var(--panel-border); border-radius: var(--border-radius-sm); padding: 18px; display: flex; flex-direction: column; gap: 14px;">
+                                <div
+                                    style="display: flex; align-items: center; justify-content: space-between; gap: 12px;">
+                                    <div style="display: flex; align-items: center; gap: 10px;">
+                                        <div
+                                            style="width: 36px; height: 36px; border-radius: 8px; background: rgba(var(--success-rgb), 0.08); display: flex; align-items: center; justify-content: center; color: var(--success);">
+                                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                                                stroke="currentColor" style="width: 20px; height: 20px;">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                    d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                            </svg>
+                                        </div>
+                                        <div>
+                                            <h4 style="font-size: 14px; font-weight: 700; color: var(--text-primary);">
+                                                Menu: Ganhos Econômicos PI</h4>
+                                            <span style="font-size: 11px; color: var(--text-muted);">Uso: Royalties,
+                                                Repasses, Partilha</span>
+                                        </div>
+                                    </div>
+                                    <span class="badge" id="ganhos-source-status-badge"
+                                        style="background: rgba(var(--success-rgb), 0.12); color: var(--success); font-size: 10px; font-weight: 700;">Dados
+                                        Padrão</span>
+                                </div>
+
+                                <!-- Fonte Original Mapeada -->
+                                <div
+                                    style="background: rgba(var(--success-rgb), 0.03); border: 1px solid rgba(var(--success-rgb), 0.1); border-radius: var(--border-radius-sm); padding: 10px 14px; font-size: 12px; line-height: 1.5; color: var(--text-secondary); display: flex; flex-direction: column; gap: 4px;">
+                                    <span
+                                        style="font-size: 10px; font-weight: 800; text-transform: uppercase; color: var(--success); letter-spacing: 0.5px;">Fonte
+                                        de Dados Padrão:</span>
+                                    <div style="display: flex; align-items: flex-start; gap: 6px;">
+                                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                                            stroke="currentColor"
+                                            style="width: 14px; height: 14px; color: var(--success); flex-shrink:0; margin-top: 2px;">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+                                        </svg>
+                                        <a href="https://docs.google.com/spreadsheets/d/1Ybhp3gQvH1vA8-xBiteq18VgObN3vggv/edit?gid=1299353642#gid=1299353642"
+                                            target="_blank"
+                                            style="color: var(--text-primary); text-decoration: underline; font-weight: 600; text-overflow: ellipsis; overflow: hidden; white-space: nowrap; max-width: 100%; display: block;"
+                                            title="Acesse a Planilha Google Sheets de Origem dos Ganhos">
+                                            Planilha Google Sheets (Aba Ganhos PI)
+                                        </a>
+                                    </div>
+                                    <span style="font-size: 10.5px; color: var(--text-muted);">Os dados pré-carregados
+                                        da aba Ganhos Econômicos PI são alimentados a partir desta planilha.</span>
+                                </div>
+                            </div>
+
+                            <!-- Histórico e Logs de Atualização -->
+                            <div style="display: flex; flex-direction: column; gap: 8px;">
+                                <span
+                                    style="font-size: 11px; font-weight: 700; text-transform: uppercase; color: var(--text-muted); letter-spacing: 0.5px;">Log
+                                    da Fonte Ativa:</span>
+                                <div
+                                    style="background: rgba(0, 0, 0, 0.1); border: 1px solid var(--panel-border); border-radius: var(--border-radius-sm); padding: 14px 18px; font-size: 12px; line-height: 1.6; color: var(--text-secondary);">
+                                    <div style="display: flex; justify-content: space-between; margin-bottom: 6px;">
+                                        <span>Status do Banco:</span>
+                                        <strong id="log-status-text" style="color: var(--success);">Pronto</strong>
+                                    </div>
+                                    <div style="display: flex; justify-content: space-between; margin-bottom: 6px;">
+                                        <span>Última Sincronização:</span>
+                                        <span id="log-sync-time">Carregamento Inicial</span>
+                                    </div>
+                                    <div style="display: flex; justify-content: space-between; margin-bottom: 6px;">
+                                        <span>Total Projetos Contratados:</span>
+                                        <span id="log-records-count"
+                                            style="font-weight: 700; color: var(--text-primary);">0</span>
+                                    </div>
+                                    <div style="display: flex; justify-content: space-between;">
+                                        <span>Total Lançamentos Ganhos PI:</span>
+                                        <span id="log-ganhos-records-count"
+                                            style="font-weight: 700; color: var(--text-primary);">0</span>
+                                    </div>
+                                </div>
+                                <button class="pagination-btn" id="btn-refresh-active-source"
+                                    style="background: rgba(var(--primary-rgb), 0.08); border-color: rgba(var(--primary-rgb), 0.2); color: var(--primary); font-weight: 700; font-size: 13px; height: 38px; width: 100%; display: flex; align-items: center; justify-content: center; gap: 8px; transition: all 0.3s ease;">
+                                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                                        stroke="currentColor" style="width: 16px; height: 16px;">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                            d="M4 4v5h.582m15.356 2A8.001 8.001 0 1121.21 8H18" />
+                                    </svg>
+                                </button>
+                                <div
+                                    style="margin-top: 12px; padding: 10px 12px; background: rgba(var(--primary-rgb), 0.04); border: 1px dashed rgba(var(--primary-rgb), 0.15); border-radius: var(--border-radius-sm); font-size: 11.5px; color: var(--text-secondary); line-height: 1.4;">
+                                    <span
+                                        style="font-weight: 700; color: var(--text-primary); display: block; margin-bottom: 2px;">💡
+                                        Nota para Execução Local:</span>
+                                    Se a sincronização direta falhar por restrições CORS (comum no protocolo
+                                    <code>file://</code>), execute o arquivo <code>atualizar_dados.bat</code> na pasta
+                                    do projeto para atualizar a base local e depois clique em Atualizar.
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Coluna 2: Upload de Novo Arquivo -->
+                    <div class="chart-card">
+                        <div class="chart-header" style="margin-bottom: 12px;">
+                            <div>
+                                <h3 style="font-size: 18px; font-weight: 700;">Importar Nova Planilha Local</h3>
+                                <div style="font-size:12px; color:var(--text-secondary); margin-top: 4px;">Envie
+                                    arquivos de planilhas para atualizar a base temporária.</div>
+                            </div>
+                        </div>
+
+                        <div class="upload-card" style="border: none; padding: 0; background: none; box-shadow: none;">
+                            <div class="drop-zone" id="csv-drop-zone" style="height: 200px; max-width: 100%;">
+                                <div class="drop-zone-icon">
+                                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                                        stroke="currentColor" style="width: 28px; height: 28px;">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                            d="M9 13h6m-3-3v6m-9 1V7a2 2 0 012-2h6l2 2h6a2 2 0 012 2v8a2 2 0 01-2 2H5a2 2 0 01-2-2z" />
+                                    </svg>
+                                </div>
+                                <div class="drop-zone-text">
+                                    Arraste e solte o arquivo <span>CSV, XLSX ou XLS</span> aqui ou clique para
+                                    selecionar
+                                </div>
+                                <div class="drop-zone-sub">
+                                    Suporta planilhas exportadas do SIE, FATEC ou Excel.
+                                </div>
+                                <input type="file" id="csv-file-input" accept=".csv,.xlsx,.xls" style="display: none;">
+                            </div>
+
+                            <div
+                                style="line-height: 1.6; text-align: left; color: var(--text-secondary); margin-top: 12px; width: 100%;">
+                                <h4
+                                    style="color: var(--text-primary); margin-bottom: 6px; font-weight: 700; font-size: 13px;">
+                                    Regras de Estrutura de Colunas:</h4>
+                                <p style="margin-bottom: 12px; font-size: 12px;">Para uma importação com sucesso,
+                                    garanta que seu arquivo tenha os cabeçalhos reconhecíveis (como
+                                    <strong>titulo</strong>, <strong>coordenador</strong>, <strong>valor</strong>,
+                                    <strong>situacao</strong>, <strong>fundacao</strong>, etc.).
+                                </p>
+                                <div
+                                    style="display: flex; flex-direction: column; gap: 10px; margin-top: 16px; border-top: 1px solid var(--panel-border); padding-top: 16px; width: 100%;">
+                                    <button class="pagination-btn" id="btn-download-xlsx"
+                                        style="background: rgba(var(--success-rgb), 0.08); border-color: rgba(var(--success-rgb), 0.2); color: var(--success); font-weight: 700; font-size: 13px; height: 38px; padding: 0 16px; display: flex; align-items: center; justify-content: center; gap: 8px; width: 100%;">
+                                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                                            stroke="currentColor" style="width: 16px; height: 16px;">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
+                                        </svg>
+                                        Baixar Base Atual (XLSX)
+                                    </button>
+                                    <button class="pagination-btn" id="btn-reset-data"
+                                        style="background: rgba(255, 91, 91, 0.08); border-color: rgba(255, 91, 91, 0.2); color: var(--danger); font-weight: 700; font-size: 13px; height: 38px; padding: 0 16px; width: 100%; display: flex; align-items: center; justify-content: center;">
+                                        Restaurar Banco Original
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </section>
+
+            <!-- ================= SEÇÃO: PUBLICAR NO WORDPRESS ================= -->
+            <section class="dashboard-section" id="sec-preview">
+                <div class="preview-layout">
+                    <!-- Painel de Controles no lado esquerdo -->
+                    <div class="preview-controls-card">
+                        <h3 class="controls-title">Configurações de Publicação</h3>
+                        <p class="controls-desc">Este gerador cria uma página HTML 100% autocontida da aba <strong>Visão
+                                Geral</strong> em tema claro (padrão de sites institucionais) contendo todos os dados,
+                            estilos e gráficos do Chart.js. Cole no WordPress ou hospede em seu servidor.</p>
+
+                        <div class="control-group">
+                            <label class="control-label" for="embed-width">Largura Recomendada</label>
+                            <input type="text" class="control-input" id="embed-width" value="100%"
+                                placeholder="ex: 100% ou 1200px">
+                        </div>
+
+                        <div class="control-group">
+                            <label class="control-label" for="embed-height">Altura Recomendada</label>
+                            <input type="text" class="control-input" id="embed-height" value="1450px"
+                                placeholder="ex: 1450px">
+                        </div>
+
+                        <div class="export-actions">
+                            <button class="export-btn btn-copy-code" id="btn-copy-embed-code">
+                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                                    stroke="currentColor" style="width: 16px; height: 16px; margin-right: 6px;">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M8 5H6a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2v-1M8 5a2 2 0 002 2h2a2 2 0 002-2M8 5a2 2 0 012-2h2a2 2 0 012 2m0 0h2a2 2 0 012 2v3m2 4H10m0 0l3-3m-3 3l3 3" />
+                                </svg>
+                                Copiar Código HTML
+                            </button>
+                            <button class="export-btn btn-download-code" id="btn-download-embed-html">
+                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                                    stroke="currentColor" style="width: 16px; height: 16px; margin-right: 6px;">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
+                                </svg>
+                                Baixar Arquivo HTML
+                            </button>
+                        </div>
+
+                        <div class="code-container">
+                            <div class="code-header">
+                                <span>Código HTML Autocontido</span>
+                                <span class="code-lang">html</span>
+                            </div>
+                            <textarea class="code-textarea" id="embed-code-textarea" readonly
+                                placeholder="Carregando código gerado..."></textarea>
+                        </div>
+
+                        <div class="instruction-box">
+                            <strong>Como Publicar no WordPress:</strong>
+                            <ol>
+                                <li>Clique em <strong>Copiar Código HTML</strong> acima.</li>
+                                <li>No painel do WordPress, edite a página onde deseja inserir o painel.</li>
+                                <li>Adicione um bloco de <strong>HTML Personalizado</strong> (Custom HTML) ou elemento
+                                    HTML no Elementor/Divi.</li>
+                                <li>Cole o código copiado e salve a página. Pronto!</li>
+                            </ol>
+                        </div>
+                    </div>
+
+                    <!-- Simulador de site WordPress / UFSM no lado direito -->
+                    <div class="preview-simulator-card">
+                        <div class="simulator-header">
+                            <div class="simulator-dots">
+                                <span class="dot-red"></span>
+                                <span class="dot-yellow"></span>
+                                <span class="dot-green"></span>
+                            </div>
+                            <div class="simulator-address-bar">
+                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                                    stroke="currentColor" style="width: 12px; height: 12px; margin-right: 6px;">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+                                </svg>
+                                <span>https://ufsm.br/portal-projetos/bi-visao-geral</span>
+                            </div>
+                        </div>
+
+                        <!-- Interface simulada do WordPress/Site UFSM -->
+                        <div class="wordpress-mockup">
+                            <!-- Cabeçalho do Site -->
+                            <header class="wp-site-header">
+                                <div class="wp-site-logo">
+                                    <div class="wp-logo-crest"></div>
+                                    <div class="wp-logo-text">
+                                        <h4>Universidade Federal de Santa Maria</h4>
+                                        <span>Portal de Projetos e Investimentos</span>
+                                    </div>
+                                </div>
+                                <nav class="wp-site-nav">
+                                    <span>Início</span>
+                                    <span>Notícias</span>
+                                    <span class="active">Transparência</span>
+                                    <span>Contato</span>
+                                </nav>
+                            </header>
+
+                            <!-- Área do Post / Página do WordPress -->
+                            <div class="wp-page-container">
+                                <div class="wp-page-sidebar">
+                                    <div class="wp-sidebar-widget">
+                                        <ul>
+                                            <li id="btn-wp-projetos-contratados">Projetos Contratados (Visão Geral)</li>
+                                            <li id="btn-wp-ganhos-pi">Ganhos Econômicos PI</li>
+                                            <li id="btn-wp-propriedade-intelectual">Propriedade Intelectual</li>
+                                        </ul>
+                                    </div>
+                                </div>
+
+                                <div class="wp-page-content">
+                                    <!-- Placeholder Inicial -->
+                                    <div id="wp-preview-placeholder" class="wp-preview-placeholder">
+                                        <div class="wp-placeholder-content">
+                                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                                                stroke="currentColor" class="wp-placeholder-icon">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                    d="M15 15l-2 5L9 9l11 4-5 2zm0 0l5 5M7.188 2.239l.777 2.897M5.136 7.965l-2.898-.777M13.95 4.05l-2.122 2.122m-5.657 5.656l-2.12 2.122" />
+                                            </svg>
+                                            <h3>Selecione uma Opção</h3>
+                                            <p>Clique em <strong>Projetos Contratados (Visão Geral)</strong> no menu
+                                                lateral para
+                                                visualizar a página de Visão Geral do Painel Executivo.</p>
+                                        </div>
+                                    </div>
+
+                                    <!-- Conteúdo Real (Inicialmente Oculto) -->
+                                    <div id="wp-actual-content"
+                                        style="display: none; opacity: 0; transition: opacity 0.5s ease;">
+                                        <h1 class="wp-post-title">Painel Executivo de Business Intelligence</h1>
+                                        <div class="wp-post-meta">Publicado em: 01 de Junho de 2026 | Por Pró-Reitoria |
+                                            Seção Transparência</div>
+
+                                        <p class="wp-post-lead">Acompanhe abaixo o painel de BI com o investimento
+                                            financeiro e dados estatísticos consolidados do portfólio de projetos da
+                                            UFSM.</p>
+
+                                        <!-- O Bloco HTML do WordPress simulado onde o iframe carrega -->
+                                        <div class="wp-html-block">
+                                            <div class="iframe-wrapper" style="position: relative;">
+                                                <!-- Loader de Carregamento -->
+                                                <div id="iframe-loader" class="iframe-loader" style="display: none;">
+                                                    <div class="wp-spinner"></div>
+                                                    <span>Carregando dados em tempo real...</span>
+                                                </div>
+                                                <iframe id="wordpress-preview-iframe"
+                                                    title="Pré-visualização WordPress"></iframe>
+                                            </div>
+                                        </div>
+
+                                        <p class="wp-post-footer-text">Este painel é atualizado dinamicamente integrando
+                                            dados diretos de vigência e fundações da UFSM (FATEC, FIEX, COOPERA).</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <!-- ================= SLICK MODAL DE DETALHES ================= -->
+    <div class="modal-overlay" id="detail-modal">
+        <div class="modal-container">
+            <div class="modal-header">
+                <div class="modal-header-info">
+                    <span class="modal-tag" id="modal-tag-type">Tipo de Projeto</span>
+                    <h3 class="modal-title" id="modal-title-title">Título do Projeto Completo Exibido Aqui</h3>
+                </div>
+                <button class="modal-close-btn" id="modal-close-btn">&times;</button>
+            </div>
+
+            <div class="modal-body">
+                <div class="modal-grid-2">
+                    <div class="modal-field">
+                        <span class="modal-field-label">Coordenador do Projeto</span>
+                        <span class="modal-field-value highlight" id="modal-val-coordenador">---</span>
+                    </div>
+                    <div class="modal-field">
+                        <span class="modal-field-label">Fundação de Apoio</span>
+                        <span class="modal-field-value" id="modal-val-fundacao">---</span>
+                    </div>
+                </div>
+
+                <div class="modal-grid-2">
+                    <div class="modal-field">
+                        <span class="modal-field-label">Valor do Contrato</span>
+                        <span class="modal-field-value amount" id="modal-val-valor">R$ 0,00</span>
+                    </div>
+                    <div class="modal-field">
+                        <span class="modal-field-label">Taxa UFSM Retornada</span>
+                        <span class="modal-field-value amount" style="color: var(--primary);" id="modal-val-taxa">R$
+                            0,00</span>
+                    </div>
+                </div>
+
+                <div class="modal-grid-2">
+                    <div class="modal-field">
+                        <span class="modal-field-label">Unidade Acadêmica / Centro</span>
+                        <span class="modal-field-value" id="modal-val-unidade">---</span>
+                    </div>
+                    <div class="modal-field">
+                        <span class="modal-field-label">Subunidade / Departamento</span>
+                        <span class="modal-field-value" id="modal-val-subunidade">---</span>
+                    </div>
+                </div>
+
+                <div class="modal-grid-2">
+                    <div class="modal-field">
+                        <span class="modal-field-label">Data de Início da Vigência</span>
+                        <span class="modal-field-value" id="modal-val-vigencia-ini">---</span>
+                    </div>
+                    <div class="modal-field">
+                        <span class="modal-field-label">Data Final de Vigência</span>
+                        <span class="modal-field-value" id="modal-val-vigencia-fim">---</span>
+                    </div>
+                </div>
+
+                <div class="modal-grid-2">
+                    <div class="modal-field">
+                        <span class="modal-field-label">Situação Cadastral</span>
+                        <span class="modal-field-value" id="modal-val-situacao">---</span>
+                    </div>
+                    <div class="modal-field">
+                        <span class="modal-field-label">NUP PEN-SIE</span>
+                        <span class="modal-field-value" id="modal-val-nup">---</span>
+                    </div>
+                </div>
+
+                <div class="modal-field">
+                    <span class="modal-field-label">Fiscal de Acompanhamento</span>
+                    <span class="modal-field-value" id="modal-val-fiscal">---</span>
+                </div>
+
+                <div class="modal-field">
+                    <span class="modal-field-label">Partícipes / Empresas Envolvidas</span>
+                    <span class="modal-field-value" id="modal-val-participes">---</span>
+                </div>
+
+                <div class="modal-field">
+                    <span class="modal-field-label">Agência Financiadora / Edital</span>
+                    <span class="modal-field-value" id="modal-val-financiador">---</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ================= MODAL DE ESPELHO / PRÉ-VISUALIZAÇÃO DE IMPORTAÇÃO (ESTILO POWER QUERY) ================= -->
+    <div class="modal-overlay" id="import-preview-modal">
+        <div class="modal-container" style="max-width: 1050px; width: 95%;">
+            <div class="modal-header" style="padding: 20px 28px;">
+                <div class="modal-header-info">
+                    <span class="modal-tag" style="color: var(--primary);">Power Query Data Connector</span>
+                    <h3 class="modal-title" style="font-size: 18px;">Pré-visualizar e Mapear Planilha</h3>
+                </div>
+                <button class="modal-close-btn" id="preview-modal-close-btn">&times;</button>
+            </div>
+
+            <div class="modal-body" style="gap: 16px; padding: 0 28px 24px 28px;">
+                <p style="font-size: 13px; color: var(--text-secondary); line-height: 1.5; margin: 0 0 4px 0;">
+                    Selecione as abas da planilha <strong id="preview-filename"
+                        style="color: var(--text-primary);">planilha.xlsx</strong> que deseja importar. Os dados das
+                    abas marcadas serão combinados no dashboard.
+                </p>
+
+                <!-- Power Query Workspace Layout -->
+                <div class="power-query-layout">
+                    <!-- Painel Esquerdo (Navigator) -->
+                    <div class="power-query-sidebar">
+                        <div class="power-query-sidebar-header">
+                            <input type="checkbox" id="preview-select-all" class="power-query-checkbox" checked>
+                            <span>Selecionar todas</span>
+                        </div>
+                        <div class="power-query-sheet-list" id="preview-sheet-list">
+                            <!-- Preenchido dinamicamente via JS -->
+                        </div>
+                    </div>
+
+                    <!-- Painel Direito (Preview Grid) -->
+                    <div class="power-query-content">
+                        <div class="power-query-content-header">
+                            <div>
+                                <span>Aba Ativa: </span>
+                                <strong id="preview-active-sheet-name" style="color: var(--primary);">---</strong>
+                            </div>
+                            <span id="preview-sheet-row-count"
+                                style="font-size: 12px; color: var(--text-muted); font-weight: 500;">0 registros</span>
+                        </div>
+                        <div class="power-query-preview-container">
+                            <table class="modern-table"
+                                style="margin: 0; font-size: 12px; width: 100%; white-space: nowrap;"
+                                id="preview-data-table">
+                                <thead id="preview-data-thead">
+                                    <!-- Preenchido dinamicamente -->
+                                </thead>
+                                <tbody id="preview-data-tbody">
+                                    <!-- Preenchido dinamicamente -->
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Mensagem de Aviso se houver erros nos cabeçalhos mapeados das abas marcadas -->
+                <div id="preview-warning-box"
+                    style="display: none; padding: 12px 16px; border-radius: var(--border-radius-sm); border: 1px solid rgba(255, 91, 91, 0.2); background: rgba(255, 91, 91, 0.05); color: var(--danger); font-size: 12.5px; line-height: 1.5; margin-top: 4px;">
+                    <div style="display: flex; align-items: flex-start; gap: 8px;">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"
+                            style="width: 18px; height: 18px; flex-shrink: 0; margin-top: 1px;">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+                        </svg>
+                        <div>
+                            <strong style="font-weight: 700;">Aviso de Mapeamento:</strong>
+                            Algumas abas selecionadas não possuem todos os campos obrigatórios (*ID, Projeto,
+                            Coordenador, Valor*). Verifique a aba ativa para mais detalhes.
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Ações do Modal -->
+                <div
+                    style="display: flex; justify-content: flex-end; gap: 12px; border-top: 1px solid var(--panel-border); padding-top: 16px; margin-top: 4px;">
+                    <button class="export-btn btn-download-code" id="btn-preview-cancel"
+                        style="height: 38px; padding: 0 20px;">
+                        Cancelar
+                    </button>
+                    <button class="export-btn btn-copy-code" id="btn-preview-confirm"
+                        style="height: 38px; padding: 0 20px;">
+                        Carregar Dados
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts de Dados e Lógica -->
+    <script src="data.js"></script>
+    <script src="ganhos_data.js?v=2"></script>
+    <script src="pi_data.js?v=2"></script>
+    <script src="app.js?v=2"></script>
+</body>
+
+</html>
