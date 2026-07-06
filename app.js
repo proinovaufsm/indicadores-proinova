@@ -61,6 +61,12 @@ document.addEventListener('DOMContentLoaded', () => {
     init();
 
     function init() {
+        // Detect public mode from URL parameter
+        const urlParams = new URLSearchParams(window.location.search);
+        if (urlParams.get('public') === 'true') {
+            document.documentElement.classList.add('public-mode');
+        }
+
         // 0. Invalidação de Cache para Formatação de Título e Financiadores
         if (!localStorage.getItem('title_migration_v3')) {
             localStorage.removeItem('default_projects_data');
