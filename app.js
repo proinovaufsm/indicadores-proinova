@@ -4205,7 +4205,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
                 <!-- Filtros Ganhos -->
                 <div class="year-filter-panel">
-                    <div class="filter-group" style="flex: 1.5; min-width: 180px;">
+                    <div class="filter-group" style="flex: 1.5; min-width: 180px; display: none !important;">
                         <div class="filter-label-group">
                             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" class="filter-icon" style="color: var(--primary);">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
