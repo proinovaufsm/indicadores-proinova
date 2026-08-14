@@ -50,7 +50,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const chartInstances = {};
     
     // Tema Visual Ativo
-    let currentTheme = localStorage.getItem('theme') || 'dark';
+    let currentTheme = 'light';
 
     // === INICIALIZACAO ===
     init();
@@ -221,12 +221,14 @@ document.addEventListener('DOMContentLoaded', () => {
         const darkIcon = document.getElementById('theme-icon-dark');
         const lightIcon = document.getElementById('theme-icon-light');
 
-        if (theme === 'dark') {
-            darkIcon.style.display = 'none';
-            lightIcon.style.display = 'block';
-        } else {
-            darkIcon.style.display = 'block';
-            lightIcon.style.display = 'none';
+        if (darkIcon && lightIcon) {
+            if (theme === 'dark') {
+                darkIcon.style.display = 'none';
+                lightIcon.style.display = 'block';
+            } else {
+                darkIcon.style.display = 'block';
+                lightIcon.style.display = 'none';
+            }
         }
 
         // Se os gráficos já existem, atualiza as cores de fonte/grade deles
@@ -280,7 +282,8 @@ document.addEventListener('DOMContentLoaded', () => {
         const projectsForAno = projects.filter(p => {
             const matchContrato = !currentContrato || p.tipo_contrato === currentContrato;
             const matchCoord = !currentCoord || p.coordenador === currentCoord;
-            return matchContrato && matchCoord;
+            const hasStartDate = p.mes && p.mes >= 1 && p.mes <= 12;
+            return matchContrato && matchCoord && hasStartDate;
         });
         const anos = new Set();
         projectsForAno.forEach(p => { if (p.ano) anos.add(p.ano); });
@@ -289,7 +292,8 @@ document.addEventListener('DOMContentLoaded', () => {
         const projectsForContrato = projects.filter(p => {
             const matchAno = !currentAno || (p.ano && p.ano.toString() === currentAno);
             const matchCoord = !currentCoord || p.coordenador === currentCoord;
-            return matchAno && matchCoord;
+            const hasStartDate = p.mes && p.mes >= 1 && p.mes <= 12;
+            return matchAno && matchCoord && hasStartDate;
         });
         const contratos = new Set();
         projectsForContrato.forEach(p => {
@@ -302,7 +306,8 @@ document.addEventListener('DOMContentLoaded', () => {
         const projectsForCoordenador = projects.filter(p => {
             const matchAno = !currentAno || (p.ano && p.ano.toString() === currentAno);
             const matchContrato = !currentContrato || p.tipo_contrato === currentContrato;
-            return matchAno && matchContrato;
+            const hasStartDate = p.mes && p.mes >= 1 && p.mes <= 12;
+            return matchAno && matchContrato && hasStartDate;
         });
         const coordenadores = new Set();
         projectsForCoordenador.forEach(p => {
@@ -440,9 +445,12 @@ document.addEventListener('DOMContentLoaded', () => {
     // === CONFIGURACAO DOS EVENT LISTENERS ===
     function setupEventListeners() {
         // Alternador de Tema
-        document.getElementById('theme-toggle').addEventListener('click', () => {
-            applyTheme(currentTheme === 'dark' ? 'light' : 'dark');
-        });
+        const themeToggle = document.getElementById('theme-toggle');
+        if (themeToggle) {
+            themeToggle.addEventListener('click', () => {
+                applyTheme(currentTheme === 'dark' ? 'light' : 'dark');
+            });
+        }
 
         // Navegação de Abas (Tabs)
         document.querySelectorAll('.nav-item').forEach(item => {
@@ -1056,7 +1064,8 @@ document.addEventListener('DOMContentLoaded', () => {
             const matchAno = !valAno || (p.ano && p.ano.toString() === valAno);
             const matchContrato = !selectedContractType || p.tipo_contrato === selectedContractType;
             const matchCoord = !selectedCoordinator || p.coordenador === selectedCoordinator;
-            return matchAno && matchContrato && matchCoord;
+            const hasStartDate = p.mes && p.mes >= 1 && p.mes <= 12;
+            return matchAno && matchContrato && matchCoord && hasStartDate;
         });
 
         updateDashboard();
@@ -3914,6 +3923,39 @@ document.addEventListener('DOMContentLoaded', () => {
             color: var(--success);
         }
 
+        /* Tables styling for WordPress embed */
+        .table-container {
+            width: 100%;
+            overflow-x: auto;
+        }
+        .modern-table {
+            width: 100%;
+            border-collapse: collapse;
+            text-align: left;
+            font-family: var(--font-main);
+        }
+        .modern-table th {
+            background: rgba(0, 0, 0, 0.2);
+            padding: 12px 16px;
+            font-size: 11px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            color: var(--text-secondary);
+            border-bottom: 1px solid var(--panel-border);
+        }
+        .modern-table td {
+            padding: 12px 16px;
+            font-size: 12px;
+            font-weight: 500;
+            border-bottom: 1px solid var(--panel-border);
+            color: var(--text-secondary);
+        }
+        .modern-table tbody tr:hover td {
+            background: rgba(255, 255, 255, 0.02);
+            color: var(--text-primary);
+        }
+
         @media (max-width: 992px) {
             .app-layout {
                 flex-direction: column;
@@ -4446,7 +4488,7 @@ document.addEventListener('DOMContentLoaded', () => {
                             <div style="font-size:12px; color:var(--text-secondary); margin-top: 4px;">Valores anuais consolidados dos depósitos</div>
                         </div>
                         <div class="table-container" style="max-height: 380px; overflow-y: auto;">
-                            <table class="data-table" id="pi-details-table" style="font-size: 12px; width: 100%;">
+                            <table class="modern-table" id="pi-details-table" style="font-size: 12px; width: 100%;">
                                 <thead>
                                     <tr>
                                         <th>Ano</th>
@@ -4659,7 +4701,8 @@ document.addEventListener('DOMContentLoaded', () => {
                     const matchAno = selectedYears.length === 0 || (p.ano && selectedYears.includes(p.ano.toString()));
                     const matchContrato = !selectedContractType || p.tipo_contrato === selectedContractType;
                     const matchCoord = !selectedCoordinator || p.coordenador === selectedCoordinator;
-                    return matchAno && matchContrato && matchCoord;
+                    const hasStartDate = p.mes && p.mes >= 1 && p.mes <= 12;
+                    return matchAno && matchContrato && matchCoord && hasStartDate;
                 });
                 updateDashboard();
             }

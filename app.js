@@ -55,7 +55,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const chartInstances = {};
     
     // Tema Visual Ativo
-    let currentTheme = localStorage.getItem('theme') || 'dark';
+    let currentTheme = 'light';
 
     // === INICIALIZACAO ===
     init();
@@ -246,12 +246,14 @@ document.addEventListener('DOMContentLoaded', () => {
         const darkIcon = document.getElementById('theme-icon-dark');
         const lightIcon = document.getElementById('theme-icon-light');
 
-        if (theme === 'dark') {
-            darkIcon.style.display = 'none';
-            lightIcon.style.display = 'block';
-        } else {
-            darkIcon.style.display = 'block';
-            lightIcon.style.display = 'none';
+        if (darkIcon && lightIcon) {
+            if (theme === 'dark') {
+                darkIcon.style.display = 'none';
+                lightIcon.style.display = 'block';
+            } else {
+                darkIcon.style.display = 'block';
+                lightIcon.style.display = 'none';
+            }
         }
 
         // Se os gráficos já existem, atualiza as cores de fonte/grade deles
@@ -469,9 +471,12 @@ document.addEventListener('DOMContentLoaded', () => {
     // === CONFIGURACAO DOS EVENT LISTENERS ===
     function setupEventListeners() {
         // Alternador de Tema
-        document.getElementById('theme-toggle').addEventListener('click', () => {
-            applyTheme(currentTheme === 'dark' ? 'light' : 'dark');
-        });
+        const themeToggle = document.getElementById('theme-toggle');
+        if (themeToggle) {
+            themeToggle.addEventListener('click', () => {
+                applyTheme(currentTheme === 'dark' ? 'light' : 'dark');
+            });
+        }
 
         // Navegação de Abas (Tabs)
         document.querySelectorAll('.nav-item').forEach(item => {
