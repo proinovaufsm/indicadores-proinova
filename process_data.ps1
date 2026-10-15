@@ -348,16 +348,21 @@ $Projects = foreach ($row in $RawCsv) {
     $propriedade_intelectual = ""
     $financiador = ""
 
+    # O primeiro campo da planilha eh o identificador do projeto (ex: 000001)
+    $firstProp = $row.PSObject.Properties | Select-Object -First 1
+    if ($firstProp -and -not [string]::IsNullOrWhiteSpace($firstProp.Value) -and $firstProp.Value -ne "Nº") {
+        $id = $firstProp.Value
+    }
+
     # Iterar pelas propriedades do objeto do CSV
     foreach ($prop in $row.PSObject.Properties) {
         $name = $prop.Name.Trim()
         $val = $prop.Value
 
-        if ($name -eq "" -or $name -eq "H1") { $id = $val }
-        elseif ($name -like "*antiga*") { $n_antiga = $val }
+        if ($name -like "*antiga*") { $n_antiga = $val }
         elseif ($name -like "*Planilha*") { $planilha = $val }
-        elseif ($name -like "*M*s*" -and $name -notlike "*Taxa*" -and $name -notlike "*PI*") { $mes = $val }
-        elseif ($name -like "*Ano*") { $ano = $val }
+        elseif ($name -match "M[êe\uFFFD\u00A0-\uFFFF]?s" -and $name.Length -lt 10 -and $name -notlike "*Infra*" -and $name -notlike "*UFSM*") { $mes = $val }
+        elseif ($name -like "*Ano*" -and $name.Length -le 5) { $ano = $val }
         elseif ($name -like "*Instru*") { $data_instrucao = $val }
         elseif ($name -like "*Acompanhamento*" -or $name -like "*Respons*") { $responsavel = $val }
         elseif ($name -like "*Tipo de Contrato*" -or $name -like "*Tipo deContrato*") { $tipo_contrato = $val }
@@ -368,23 +373,23 @@ $Projects = foreach ($row in $RawCsv) {
         elseif ($name -like "*NUP*") { $nup = $val }
         elseif ($name -like "*Coordenador*" -and $name -notlike "*Contato*") { $coordenador = $val }
         elseif ($name -like "*Contato*") { $contato_coordenador = $val }
-        elseif ($name -like "*Unidade*" -or $name -like "*Centro*") { $unidade = $val }
         elseif ($name -like "*Subunidade*") { $subunidade = $val }
+        elseif (($name -like "*Unidade*" -and $name -notlike "*Subunidade*") -or $name -like "*Centro*") { $unidade = $val }
         elseif ($name -like "*Fiscal*") { $fiscal = $val }
         elseif ($name -like "*Part*cipes*" -or $name -like "*Participe*") { $participes = $val }
         elseif ($name -like "*Portal*" -or $name -like "*Registro*") { $registro_portal = $val }
         elseif ($name -like "*T*tulo*" -or $name -like "*Titulo*" -or $name -like "*Projeto*") { $titulo = $val }
-        elseif ($name -like "*Valor*") { $valor = $val }
-        elseif ($name -like "*Taxa*") { $taxa_ufsm = $val }
+        elseif ($name -like "*Valor*contrato*" -or ($name -like "*Valor*" -and $name -notlike "*efetivo*" -and $name -notlike "*UFSM*")) { $valor = $val }
+        elseif ($name -like "*Taxa*" -or $name -like "*Ressasrcimento*" -or $name -like "*Ressarcimento*") { $taxa_ufsm = $val }
         elseif ($name -like "*contrato*" -and $name -notlike "*Valor*" -and $name -notlike "*Tipo*") { $numero_contrato = $val }
         elseif ($name -like "*Vig*Inicial*" -or $name -like "*Vig*Ini*") { $vigencia_inicial = $val }
         elseif ($name -like "*Vig*Final*" -or $name -like "*Vig*Fim*") { $vigencia_final = $val }
-        elseif ($name -like "*PI?*" -or $name -like "*PI*") { $remuneracao_pi = $val }
-        elseif ($name -like "*Intelectual*") { $propriedade_intelectual = $val }
+        elseif ($name -like "*Remunera*" -or $name -like "*PI?*") { $remuneracao_pi = $val }
+        elseif ($name -like "*Propriedade*Intelectual*" -or $name -like "*Intelectual*") { $propriedade_intelectual = $val }
         elseif ($name -like "*Financiador*" -or $name -like "*Edital*") { $financiador = $val }
     }
 
-    # Se nao conseguiu o ID do primeiro campo H1, usar Nº antiga ou Nº antiga modificado
+    # Se nao conseguiu o ID do primeiro campo, usar Nº antiga
     if ($null -eq $id -or $id -eq "") {
         $id = $n_antiga
     }
@@ -399,12 +404,12 @@ $Projects = foreach ($row in $RawCsv) {
     }
 
     # Juntar Registro Portal de Projetos com o Projeto/Título
-    if ($clean_reg -and $clean_reg -ne "---") {
+    if ($clean_reg -and $clean_reg -ne "---" -and (-not $titulo.StartsWith($clean_reg))) {
         $titulo = "$clean_reg - $titulo"
     }
 
     # Pular a linha do cabecalho se tiver sido importada como dados por engano
-    if ($id -eq "Nº antiga" -or $id -eq "Nº" -or $titulo -like "*Projeto/Título*" -or $titulo -like "*Projeto/Ttulo*" -or $titulo -eq "Projeto" -or $titulo -eq "Projeto/Ttulo") {
+    if ($id -eq "Nº antiga" -or $id -eq "Nº" -or $id -eq "54185" -or $titulo -like "*Projeto/Título*" -or $titulo -like "*Projeto/Ttulo*" -or $titulo -eq "Projeto" -or $titulo -eq "Projeto/Ttulo") {
         continue
     }
 
