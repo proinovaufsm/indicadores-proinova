@@ -71,13 +71,13 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         }
 
-        // 0. Invalidação de Cache para Formatação de Título e Financiadores
-        if (!localStorage.getItem('title_migration_v3')) {
+        // 0. Invalidação de Cache para Migração do Ano para Vigência Inicial
+        if (!localStorage.getItem('vigencia_migration_v4')) {
             localStorage.removeItem('default_projects_data');
             localStorage.removeItem('uploaded_projects_data');
             localStorage.removeItem('sheet_projects_data');
-            localStorage.setItem('title_migration_v3', 'true');
-            console.log("Cache de dados antigos invalidado para nova formatação de títulos e normalizações.");
+            localStorage.setItem('vigencia_migration_v4', 'true');
+            console.log("Cache de dados antigos invalidado para filtragem de ano por Vigência Inicial.");
         }
 
         // 1. Carregar Tema Salvo
@@ -91,8 +91,12 @@ document.addEventListener('DOMContentLoaded', () => {
                     const cleanTitle = (p.registro_portal && p.registro_portal !== "---" && !p.titulo.startsWith(p.registro_portal)) 
                         ? `${p.registro_portal} - ${p.titulo}` 
                         : p.titulo;
+                    const extractedAno = getYearFromVigencia(p.vigencia_inicial);
+                    const extractedMes = getMonthFromVigencia(p.vigencia_inicial);
                     return {
                         ...p,
+                        ano: extractedAno,
+                        mes: extractedMes,
                         titulo: cleanTitle,
                         financiador: normalizeFinanciador(p.financiador)
                     };
@@ -105,8 +109,8 @@ document.addEventListener('DOMContentLoaded', () => {
         }
         if ((!originalProjects || originalProjects.length === 0) && typeof initialProjectsData !== 'undefined') {
             originalProjects = initialProjectsData.map(p => {
-                const extractedAno = getYearFromVigencia(p.vigencia_inicial) || p.ano;
-                const extractedMes = getMonthFromVigencia(p.vigencia_inicial) || p.mes;
+                const extractedAno = getYearFromVigencia(p.vigencia_inicial);
+                const extractedMes = getMonthFromVigencia(p.vigencia_inicial);
                 return {
                     ...p,
                     ano: extractedAno,
@@ -2086,8 +2090,8 @@ document.addEventListener('DOMContentLoaded', () => {
         if (sourceType === 'default') {
             if ((!originalProjects || originalProjects.length === 0) && typeof initialProjectsData !== 'undefined') {
                 originalProjects = initialProjectsData.map(p => {
-                    const extractedAno = getYearFromVigencia(p.vigencia_inicial) || p.ano;
-                    const extractedMes = getMonthFromVigencia(p.vigencia_inicial) || p.mes;
+                    const extractedAno = getYearFromVigencia(p.vigencia_inicial);
+                    const extractedMes = getMonthFromVigencia(p.vigencia_inicial);
                     return {
                         ...p,
                         ano: extractedAno,
@@ -2297,8 +2301,8 @@ document.addEventListener('DOMContentLoaded', () => {
                     }
                     
                     const pTax = cleanJsCurrency(rawTaxa.toString());
-                    const pAno = getYearFromVigencia(rawVigenciaIni.toString()) || (parseInt(rawAno.toString()) || null);
-                    const pMes = parseInt(rawMes.toString()) || null;
+                    const pAno = getYearFromVigencia(rawVigenciaIni.toString());
+                    const pMes = getMonthFromVigencia(rawVigenciaIni.toString());
                     
                     const tipoProj = valAt(idxMapProj.tipo_projeto) || "Outro";
                     const situacao = valAt(idxMapProj.situacao) || "Indefinida";
@@ -2464,8 +2468,8 @@ document.addEventListener('DOMContentLoaded', () => {
                     if (loadedCount === totalScripts) {
                         if (typeof initialProjectsData !== 'undefined' && typeof initialGanhosData !== 'undefined') {
                             originalProjects = initialProjectsData.map(p => {
-                                const extractedAno = getYearFromVigencia(p.vigencia_inicial) || p.ano;
-                                const extractedMes = getMonthFromVigencia(p.vigencia_inicial) || p.mes;
+                                const extractedAno = getYearFromVigencia(p.vigencia_inicial);
+                                const extractedMes = getMonthFromVigencia(p.vigencia_inicial);
                                 return {
                                     ...p,
                                     ano: extractedAno,
@@ -3049,8 +3053,8 @@ document.addEventListener('DOMContentLoaded', () => {
                     }
 
                     const pTax = cleanJsCurrency(rawTaxa.toString());
-                    const pAno = getYearFromVigencia(rawVigenciaIni.toString()) || (parseInt(rawAno.toString()) || null);
-                    const pMes = parseInt(rawMes.toString()) || null;
+                    const pAno = getYearFromVigencia(rawVigenciaIni.toString());
+                    const pMes = getMonthFromVigencia(rawVigenciaIni.toString());
 
                     const tipoProj = valAt(idxMap.tipo_projeto) || "Outro";
                     const situacao = valAt(idxMap.situacao) || "Indefinida";

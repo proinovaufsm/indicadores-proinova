@@ -75,6 +75,38 @@ function Clean-Month($val) {
     return $null
 }
 
+function Get-YearFromVigencia($vig) {
+    if ($null -eq $vig -or $vig -eq "" -or $vig -eq "---") { return $null }
+    $cleanVig = $vig.Trim()
+    if ($cleanVig -match "(\d{1,2})/(\d{1,2})/(\d{4})") {
+        $y = [int]$Matches[3]
+        if ($y -ge 1990 -and $y -le 2040) { return $y }
+    }
+    if ($cleanVig -match "(\d{4})-(\d{1,2})-(\d{1,2})") {
+        $y = [int]$Matches[1]
+        if ($y -ge 1990 -and $y -le 2040) { return $y }
+    }
+    if ($cleanVig -match "\b(20\d{2}|19\d{2})\b") {
+        $y = [int]$Matches[1]
+        if ($y -ge 1990 -and $y -le 2040) { return $y }
+    }
+    return $null
+}
+
+function Get-MonthFromVigencia($vig) {
+    if ($null -eq $vig -or $vig -eq "" -or $vig -eq "---") { return $null }
+    $cleanVig = $vig.Trim()
+    if ($cleanVig -match "(\d{1,2})/(\d{1,2})/(\d{4})") {
+        $m = [int]$Matches[2]
+        if ($m -ge 1 -and $m -le 12) { return $m }
+    }
+    if ($cleanVig -match "(\d{4})-(\d{1,2})-(\d{1,2})") {
+        $m = [int]$Matches[2]
+        if ($m -ge 1 -and $m -le 12) { return $m }
+    }
+    return $null
+}
+
 function Fix-Encoding($val) {
     if ($null -eq $val -or $val -eq "") { return "" }
     
@@ -465,13 +497,18 @@ $Projects = foreach ($row in $RawCsv) {
     elseif ($unidNorm -like "*CTISM*") { $unidNorm = "CTISM" }
     elseif ($unidNorm -like "*FW*" -or $unidNorm -like "*FREDERICO*") { $unidNorm = "UFSM-FW" }
 
+    # O ano e mês devem ser filtrados pela coluna AB (Vigência Inicial)
+    $anoVigencia = Get-YearFromVigencia $vigencia_inicial
+    $mesVigencia = Get-MonthFromVigencia $vigencia_inicial
+
     # Retorna o objeto estruturado
     [PSCustomObject]@{
         id                      = $id
         n_antiga                = Clean-Text $n_antiga
         planilha                = Clean-Text $planilha
-        mes                     = Clean-Month $mes
-        ano                     = Clean-Year $ano
+        mes                     = $mesVigencia
+        ano                     = $anoVigencia
+        ano_documentacao        = Clean-Year $ano
         data_instrucao          = Clean-Text $data_instrucao
         responsavel             = Clean-Text $responsavel
         tipo_contrato           = Clean-Text $tipo_contrato
