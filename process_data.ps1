@@ -338,8 +338,8 @@ $Projects = foreach ($row in $RawCsv) {
     $participes = ""
     $titulo = ""
     $registro_portal = ""
-    $id_projeto_fundacao = ""
-    $valor = ""
+    $valor_contrato = ""
+    $valor_efetivo = ""
     $taxa_ufsm = ""
     $numero_contrato = ""
     $vigencia_inicial = ""
@@ -379,7 +379,8 @@ $Projects = foreach ($row in $RawCsv) {
         elseif ($name -like "*Part*cipes*" -or $name -like "*Participe*") { $participes = $val }
         elseif ($name -like "*Portal*" -or $name -like "*Registro*") { $registro_portal = $val }
         elseif ($name -like "*T*tulo*" -or $name -like "*Titulo*" -or $name -like "*Projeto*") { $titulo = $val }
-        elseif ($name -like "*Valor*contrato*" -or ($name -like "*Valor*" -and $name -notlike "*efetivo*" -and $name -notlike "*UFSM*")) { $valor = $val }
+        elseif ($name -like "*Valor*efetivo*") { $valor_efetivo = $val }
+        elseif ($name -like "*Valor*contrato*" -or ($name -like "*Valor*" -and $name -notlike "*efetivo*" -and $name -notlike "*UFSM*")) { $valor_contrato = $val }
         elseif ($name -like "*Taxa*" -or $name -like "*Ressasrcimento*" -or $name -like "*Ressarcimento*") { $taxa_ufsm = $val }
         elseif ($name -like "*contrato*" -and $name -notlike "*Valor*" -and $name -notlike "*Tipo*") { $numero_contrato = $val }
         elseif ($name -like "*Vig*Inicial*" -or $name -like "*Vig*Ini*") { $vigencia_inicial = $val }
@@ -425,7 +426,22 @@ $Projects = foreach ($row in $RawCsv) {
     $unidade = Clean-Text $unidade
     if ($unidade -eq "") { $unidade = "OUTRA" }
 
-    $numValor = Clean-Currency $valor
+    $valEfetivoLimpo = if ($null -ne $valor_efetivo) { $valor_efetivo.Trim() } else { "" }
+    $valContratoLimpo = if ($null -ne $valor_contrato) { $valor_contrato.Trim() } else { "" }
+
+    $numValorEfetivo = Clean-Currency $valor_efetivo
+    $numValorContrato = Clean-Currency $valor_contrato
+
+    # Coluna X (Valor efetivo UFSM (R$)): valor real do projeto.
+    # Quando coluna X estiver em branco e coluna W (Valor do contrato) contiver um valor, considerar coluna W.
+    if ($valEfetivoLimpo -ne "" -and $valEfetivoLimpo -ne "---" -and $valEfetivoLimpo -notlike "*#VALUE*") {
+        $numValor = $numValorEfetivo
+    } elseif ($valContratoLimpo -ne "" -and $valContratoLimpo -ne "---" -and $valContratoLimpo -notlike "*#VALUE*") {
+        $numValor = $numValorContrato
+    } else {
+        $numValor = 0.0
+    }
+
     $numTaxaUfsm = Clean-Currency $taxa_ufsm
 
     # Normalizar Tipo de Projeto
@@ -476,6 +492,8 @@ $Projects = foreach ($row in $RawCsv) {
         registro_portal         = Clean-Text $registro_portal
         id_projeto_fundacao     = Clean-Text $id_projeto_fundacao
         valor                   = $numValor
+        valor_contrato          = $numValorContrato
+        valor_efetivo           = $numValorEfetivo
         taxa_ufsm               = $numTaxaUfsm
         numero_contrato         = Clean-Text $numero_contrato
         vigencia_inicial        = Clean-Text $vigencia_inicial

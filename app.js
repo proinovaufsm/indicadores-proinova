@@ -2279,13 +2279,23 @@ document.addEventListener('DOMContentLoaded', () => {
                         continue;
                     }
                     
-                    const rawValor = valAt(idxMapProj.valor) || "0";
+                    const rawValEfetivo = valAt(idxMapProj.valor_efetivo);
+                    const rawValContrato = valAt(idxMapProj.valor_contrato !== -1 ? idxMapProj.valor_contrato : idxMapProj.valor);
                     const rawTaxa = valAt(idxMapProj.taxa_ufsm) || "0";
                     const rawAno = valAt(idxMapProj.ano);
                     const rawMes = valAt(idxMapProj.mes);
                     const rawVigenciaIni = valAt(idxMapProj.vigencia_inicial);
                     
-                    const pVal = cleanJsCurrency(rawValor.toString());
+                    const cleanEfetivo = (rawValEfetivo || "").toString().trim();
+                    const cleanContrato = (rawValContrato || "").toString().trim();
+
+                    let pVal = 0;
+                    if (cleanEfetivo && cleanEfetivo !== "---" && !cleanEfetivo.includes("#VALUE")) {
+                        pVal = cleanJsCurrency(cleanEfetivo);
+                    } else if (cleanContrato && cleanContrato !== "---" && !cleanContrato.includes("#VALUE")) {
+                        pVal = cleanJsCurrency(cleanContrato);
+                    }
+                    
                     const pTax = cleanJsCurrency(rawTaxa.toString());
                     const pAno = getYearFromVigencia(rawVigenciaIni.toString()) || (parseInt(rawAno.toString()) || null);
                     const pMes = parseInt(rawMes.toString()) || null;
@@ -2339,6 +2349,8 @@ document.addEventListener('DOMContentLoaded', () => {
                         })(),
                         registro_portal: (idxMapProj.registro_portal !== -1 && row[idxMapProj.registro_portal]) ? row[idxMapProj.registro_portal].toString().trim() : "",
                         valor: pVal,
+                        valor_contrato: cleanJsCurrency((rawValContrato || "0").toString()),
+                        valor_efetivo: cleanJsCurrency((rawValEfetivo || "0").toString()),
                         taxa_ufsm: pTax,
                         vigencia_inicial: fixEncoding((idxMapProj.vigencia_inicial !== -1 && row[idxMapProj.vigencia_inicial]) ? row[idxMapProj.vigencia_inicial].toString().trim() : ""),
                         vigencia_final: fixEncoding((idxMapProj.vigencia_final !== -1 && row[idxMapProj.vigencia_final]) ? row[idxMapProj.vigencia_final].toString().trim() : ""),
@@ -2743,6 +2755,8 @@ document.addEventListener('DOMContentLoaded', () => {
             titulo: -1,
             registro_portal: -1,
             valor: -1,
+            valor_contrato: -1,
+            valor_efetivo: -1,
             taxa_ufsm: -1,
             vigencia_inicial: -1,
             vigencia_final: -1,
@@ -2771,8 +2785,10 @@ document.addEventListener('DOMContentLoaded', () => {
             else if (hLower.includes("partícipe") || hLower.includes("participe")) idxMap.participes = idx;
             else if (hLower.includes("portal") || hLower.includes("registro")) idxMap.registro_portal = idx;
             else if (hLower.includes("título") || hLower.includes("titulo") || (hLower.includes("projeto") && hLower.includes("título")) || hLower === "projeto" || hLower === "nome do projeto" || hLower === "nome") idxMap.titulo = idx;
+            else if (hLower.includes("valor") && hLower.includes("efetivo")) idxMap.valor_efetivo = idx;
+            else if (hLower.includes("valor") && (hLower.includes("contrato") || (!hLower.includes("efetivo") && !hLower.includes("ufsm")))) idxMap.valor_contrato = idx;
             else if (hLower.includes("valor") || hLower.includes("custo")) idxMap.valor = idx;
-            else if (hLower.includes("taxa")) idxMap.taxa_ufsm = idx;
+            else if (hLower.includes("taxa") || hLower.includes("ressarcimento") || hLower.includes("ressasrcimento")) idxMap.taxa_ufsm = idx;
             else if (hLower.includes("vigência inicial") || hLower.includes("vigencia inicial") || hLower.includes("inicio") || hLower.includes("início")) idxMap.vigencia_inicial = idx;
             else if (hLower.includes("vigência final") || hLower.includes("vigencia final") || hLower.includes("fim") || hLower.includes("termino") || hLower.includes("término")) idxMap.vigencia_final = idx;
             else if (hLower.includes("financiador") || hLower.includes("edital") || hLower.includes("agência") || hLower.includes("agencia")) idxMap.financiador = idx;
@@ -3015,13 +3031,23 @@ document.addEventListener('DOMContentLoaded', () => {
                         continue;
                     }
 
-                    const rawValor = valAt(idxMap.valor) || "0";
+                    const rawValEfetivo = valAt(idxMap.valor_efetivo);
+                    const rawValContrato = valAt(idxMap.valor_contrato !== -1 ? idxMap.valor_contrato : idxMap.valor);
                     const rawTaxa = valAt(idxMap.taxa_ufsm) || "0";
                     const rawAno = valAt(idxMap.ano);
                     const rawMes = valAt(idxMap.mes);
                     const rawVigenciaIni = valAt(idxMap.vigencia_inicial);
 
-                    const pVal = cleanJsCurrency(rawValor.toString());
+                    const cleanEfetivo = (rawValEfetivo || "").toString().trim();
+                    const cleanContrato = (rawValContrato || "").toString().trim();
+
+                    let pVal = 0;
+                    if (cleanEfetivo && cleanEfetivo !== "---" && !cleanEfetivo.includes("#VALUE")) {
+                        pVal = cleanJsCurrency(cleanEfetivo);
+                    } else if (cleanContrato && cleanContrato !== "---" && !cleanContrato.includes("#VALUE")) {
+                        pVal = cleanJsCurrency(cleanContrato);
+                    }
+
                     const pTax = cleanJsCurrency(rawTaxa.toString());
                     const pAno = getYearFromVigencia(rawVigenciaIni.toString()) || (parseInt(rawAno.toString()) || null);
                     const pMes = parseInt(rawMes.toString()) || null;
@@ -3075,6 +3101,8 @@ document.addEventListener('DOMContentLoaded', () => {
                         })(),
                         registro_portal: (idxMap.registro_portal !== -1 && row[idxMap.registro_portal]) ? row[idxMap.registro_portal].toString().trim() : "",
                         valor: pVal,
+                        valor_contrato: cleanJsCurrency((rawValContrato || "0").toString()),
+                        valor_efetivo: cleanJsCurrency((rawValEfetivo || "0").toString()),
                         taxa_ufsm: pTax,
                         vigencia_inicial: fixEncoding((idxMap.vigencia_inicial !== -1 && row[idxMap.vigencia_inicial]) ? row[idxMap.vigencia_inicial].toString().trim() : ""),
                         vigencia_final: fixEncoding((idxMap.vigencia_final !== -1 && row[idxMap.vigencia_final]) ? row[idxMap.vigencia_final].toString().trim() : ""),
