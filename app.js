@@ -71,13 +71,13 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         }
 
-        // 0. Invalidação de Cache para Migração do Ano para Vigência Inicial
-        if (!localStorage.getItem('vigencia_migration_v4')) {
+        // 0. Invalidação de Cache para Migração e Normalização de Unidades
+        if (!localStorage.getItem('unidade_migration_v5')) {
             localStorage.removeItem('default_projects_data');
             localStorage.removeItem('uploaded_projects_data');
             localStorage.removeItem('sheet_projects_data');
-            localStorage.setItem('vigencia_migration_v4', 'true');
-            console.log("Cache de dados antigos invalidado para filtragem de ano por Vigência Inicial.");
+            localStorage.setItem('unidade_migration_v5', 'true');
+            console.log("Cache de dados antigos invalidado para normalização de unidades (unificação de CT e centros).");
         }
 
         // 1. Carregar Tema Salvo
@@ -98,6 +98,7 @@ document.addEventListener('DOMContentLoaded', () => {
                         ano: extractedAno,
                         mes: extractedMes,
                         titulo: cleanTitle,
+                        unid_norm: normalizeUnidade(p.unid_norm || p.unidade),
                         financiador: normalizeFinanciador(p.financiador)
                     };
                 });
@@ -123,7 +124,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     tipo_projeto_norm: fixEncoding(p.tipo_projeto_norm),
                     fundacao: fixEncoding(p.fundacao),
                     unidade: fixEncoding(p.unidade),
-                    unid_norm: fixEncoding(p.unid_norm),
+                    unid_norm: normalizeUnidade(p.unid_norm || p.unidade),
                     subunidade: fixEncoding(p.subunidade),
                     fiscal: fixEncoding(p.fiscal),
                     participes: fixEncoding(p.participes),
@@ -375,7 +376,7 @@ document.addEventListener('DOMContentLoaded', () => {
         // 1. Opções para ANO (filtrado por Contrato, Unidade, Coordenador)
         const projectsForAno = projects.filter(p => {
             const matchContrato = !currentContrato || p.tipo_contrato === currentContrato;
-            const matchUnid = !currentUnid || p.unid_norm === currentUnid;
+            const matchUnid = !currentUnid || normalizeUnidade(p.unid_norm || p.unidade) === currentUnid;
             const matchCoord = !currentCoord || p.coordenador === currentCoord;
             return matchContrato && matchUnid && matchCoord;
         });
@@ -385,7 +386,7 @@ document.addEventListener('DOMContentLoaded', () => {
         // 2. Opções para CONTRATO (filtrado por Ano, Unidade, Coordenador)
         const projectsForContrato = projects.filter(p => {
             const matchAno = !currentAno || (p.ano && p.ano.toString() === currentAno);
-            const matchUnid = !currentUnid || p.unid_norm === currentUnid;
+            const matchUnid = !currentUnid || normalizeUnidade(p.unid_norm || p.unidade) === currentUnid;
             const matchCoord = !currentCoord || p.coordenador === currentCoord;
             return matchAno && matchUnid && matchCoord;
         });
@@ -400,13 +401,16 @@ document.addEventListener('DOMContentLoaded', () => {
             return matchAno && matchContrato && matchCoord;
         });
         const unidades = new Set();
-        projectsForUnid.forEach(p => { if (p.unid_norm) unidades.add(p.unid_norm); });
+        projectsForUnid.forEach(p => { 
+            const u = normalizeUnidade(p.unid_norm || p.unidade);
+            if (u) unidades.add(u); 
+        });
 
         // 4. Opções para COORDENADOR (filtrado por Ano, Contrato, Unidade)
         const projectsForCoord = projects.filter(p => {
             const matchAno = !currentAno || (p.ano && p.ano.toString() === currentAno);
             const matchContrato = !currentContrato || p.tipo_contrato === currentContrato;
-            const matchUnid = !currentUnid || p.unid_norm === currentUnid;
+            const matchUnid = !currentUnid || normalizeUnidade(p.unid_norm || p.unidade) === currentUnid;
             return matchAno && matchContrato && matchUnid;
         });
         const coordenadores = new Set();
@@ -1166,7 +1170,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
             const matchAno = !fAno || (p.ano && p.ano.toString() === fAno);
             const matchContrato = !fContrato || p.tipo_contrato === fContrato;
-            const matchUnid = !fUnid || p.unid_norm === fUnid;
+            const matchUnid = !fUnid || normalizeUnidade(p.unid_norm || p.unidade) === fUnid;
             const matchCoord = !fCoord || p.coordenador === fCoord;
 
             return matchQuery && matchAno && matchContrato && matchUnid && matchCoord;
@@ -1608,7 +1612,7 @@ document.addEventListener('DOMContentLoaded', () => {
         // 4. TOP UNIDADES E CENTROS (VERTICAL BAR DE MAIORES INVESTIMENTOS)
         const unidsData = {};
         filteredProjects.forEach(p => {
-            const key = p.unid_norm || 'OUTRA';
+            const key = normalizeUnidade(p.unid_norm || p.unidade) || 'OUTRA';
             if (!unidsData[key]) {
                 unidsData[key] = { count: 0, val: 0 };
             }
@@ -2104,7 +2108,7 @@ document.addEventListener('DOMContentLoaded', () => {
                         tipo_projeto_norm: fixEncoding(p.tipo_projeto_norm),
                         fundacao: fixEncoding(p.fundacao),
                         unidade: fixEncoding(p.unidade),
-                        unid_norm: fixEncoding(p.unid_norm),
+                        unid_norm: normalizeUnidade(p.unid_norm || p.unidade),
                         subunidade: fixEncoding(p.subunidade),
                         fiscal: fixEncoding(p.fiscal),
                         participes: fixEncoding(p.participes),
@@ -2320,11 +2324,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     else if (sUpper.includes("VIGÊNCIA") || sUpper.includes("VIGENCIA") || sUpper.includes("EM VIG")) sitNorm = "Em vigência";
                     else if (sUpper.includes("CANC") || sUpper.includes("ARQ") || sUpper.includes("SUSP")) sitNorm = "Cancelado/Suspenso";
                     
-                    let unidNorm = unidade.toString().toUpperCase();
-                    if (unidNorm.includes("REITORIA")) unidNorm = "REITORIA";
-                    else if (unidNorm.includes("POLI") || unidNorm.includes("COLÉGIO POLITÉCNICO")) unidNorm = "POLITÉCNICO";
-                    else if (unidNorm.includes("CTISM")) unidNorm = "CTISM";
-                    else if (unidNorm.includes("FW") || unidNorm.includes("FREDERICO")) unidNorm = "UFSM-FW";
+                    let unidNorm = normalizeUnidade(unidade);
                     
                     loadedProjects.push({
                         id: rawId.toString().trim(),
@@ -2339,7 +2339,7 @@ document.addEventListener('DOMContentLoaded', () => {
                         nup: fixEncoding((idxMapProj.nup !== -1 && row[idxMapProj.nup]) ? row[idxMapProj.nup].toString().trim() : ""),
                         coordenador: normalizeCoordinatorName((idxMapProj.coordenador !== -1 && row[idxMapProj.coordenador]) ? row[idxMapProj.coordenador].toString().trim() : ""),
                         unidade: fixEncoding(unidade.toString().trim()),
-                        unid_norm: fixEncoding(unidNorm),
+                        unid_norm: unidNorm,
                         subunidade: fixEncoding((idxMapProj.subunidade !== -1 && row[idxMapProj.subunidade]) ? row[idxMapProj.subunidade].toString().trim() : ""),
                         fiscal: fixEncoding((idxMapProj.fiscal !== -1 && row[idxMapProj.fiscal]) ? row[idxMapProj.fiscal].toString().trim() : ""),
                         participes: fixEncoding((idxMapProj.participes !== -1 && row[idxMapProj.participes]) ? row[idxMapProj.participes].toString().trim() : ""),
@@ -2482,7 +2482,7 @@ document.addEventListener('DOMContentLoaded', () => {
                                     tipo_projeto_norm: fixEncoding(p.tipo_projeto_norm),
                                     fundacao: fixEncoding(p.fundacao),
                                     unidade: fixEncoding(p.unidade),
-                                    unid_norm: fixEncoding(p.unid_norm),
+                                    unid_norm: normalizeUnidade(p.unid_norm || p.unidade),
                                     subunidade: fixEncoding(p.subunidade),
                                     fiscal: fixEncoding(p.fiscal),
                                     participes: fixEncoding(p.participes),
@@ -3072,11 +3072,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     else if (sUpper.includes("VIGÊNCIA") || sUpper.includes("VIGENCIA") || sUpper.includes("EM VIG")) sitNorm = "Em vigência";
                     else if (sUpper.includes("CANC") || sUpper.includes("ARQ") || sUpper.includes("SUSP")) sitNorm = "Cancelado/Suspenso";
 
-                    let unidNorm = unidade.toString().toUpperCase();
-                    if (unidNorm.includes("REITORIA")) unidNorm = "REITORIA";
-                    else if (unidNorm.includes("POLI") || unidNorm.includes("COLÉGIO POLITÉCNICO")) unidNorm = "POLITÉCNICO";
-                    else if (unidNorm.includes("CTISM")) unidNorm = "CTISM";
-                    else if (unidNorm.includes("FW") || unidNorm.includes("FREDERICO")) unidNorm = "UFSM-FW";
+                    let unidNorm = normalizeUnidade(unidade);
 
                     const newProj = {
                         id: rawId.toString().trim(),
@@ -3091,7 +3087,7 @@ document.addEventListener('DOMContentLoaded', () => {
                         nup: fixEncoding((idxMap.nup !== -1 && row[idxMap.nup]) ? row[idxMap.nup].toString().trim() : ""),
                         coordenador: normalizeCoordinatorName((idxMap.coordenador !== -1 && row[idxMap.coordenador]) ? row[idxMap.coordenador].toString().trim() : ""),
                         unidade: fixEncoding(unidade.toString().trim()),
-                        unid_norm: fixEncoding(unidNorm),
+                        unid_norm: unidNorm,
                         subunidade: fixEncoding((idxMap.subunidade !== -1 && row[idxMap.subunidade]) ? row[idxMap.subunidade].toString().trim() : ""),
                         fiscal: fixEncoding((idxMap.fiscal !== -1 && row[idxMap.fiscal]) ? row[idxMap.fiscal].toString().trim() : ""),
                         participes: fixEncoding((idxMap.participes !== -1 && row[idxMap.participes]) ? row[idxMap.participes].toString().trim() : ""),
@@ -3510,6 +3506,63 @@ document.addEventListener('DOMContentLoaded', () => {
         }
         
         return s;
+    }
+
+    // === NORMALIZAR UNIDADE / CENTRO DE ENSINO ===
+    function normalizeUnidade(val) {
+        if (!val) return "OUTRA";
+        let u = fixEncoding(val).replace(/\s+/g, ' ').trim();
+        if (!u || u === '-' || u === '---' || u.toUpperCase() === 'OUTRA') {
+            return "OUTRA";
+        }
+        
+        let uUpper = u.toUpperCase();
+
+        // 1. CTISM (Colégio Técnico Industrial de Santa Maria) - deve ser verificado antes de CT
+        if (uUpper.includes("CTISM")) {
+            return "CTISM";
+        }
+
+        // 2. CT e variações (ex: "CT 033153/2026-23", "CT/UFSM", "CT-UFSM", etc.)
+        if (/^CT\b/.test(uUpper) || uUpper.startsWith("CT ") || uUpper.startsWith("CT/") || uUpper.startsWith("CT-") || uUpper.includes("CENTRO DE TECNOLOGIA")) {
+            return "CT";
+        }
+
+        // 3. Colégio Politécnico e variações (POLI, Politécnico, etc.)
+        if (uUpper.includes("POLI") || uUpper.includes("POLITÉCNICO") || uUpper.includes("POLITECNICO")) {
+            return "POLITÉCNICO";
+        }
+
+        // 4. Campus Frederico Westphalen (UFSM-FW, FW, UFSM - FW, DETA/FW)
+        if (uUpper.includes("FW") || uUpper.includes("FREDERICO")) {
+            return "UFSM-FW";
+        }
+
+        // 5. Campus Cachoeira do Sul (UFSM-CS, CS, UFSM/CS)
+        if (uUpper === "CS" || uUpper === "UFSM-CS" || uUpper === "UFSM/CS" || uUpper.includes("CACHOEIRA")) {
+            return "UFSM-CS";
+        }
+
+        // 6. Campus Palmeira das Missões (UFSM-PM, PM, UFSM/PM)
+        if (uUpper === "PM" || uUpper === "UFSM-PM" || uUpper === "UFSM/PM" || uUpper.includes("PALMEIRA")) {
+            return "UFSM-PM";
+        }
+
+        // 7. Reitoria e Gabinete do Reitor
+        if (uUpper.includes("REITORIA") || uUpper.includes("GABINETE")) {
+            return "REITORIA";
+        }
+
+        // 8. Centros de Ensino regulares
+        if (uUpper === "CCR" || uUpper.includes("CIÊNCIAS RURAIS") || uUpper.includes("CIENCIAS RURAIS")) return "CCR";
+        if (uUpper === "CCNE" || uUpper.includes("NATURAIS E EXATAS")) return "CCNE";
+        if (uUpper === "CCS" || uUpper.includes("CIÊNCIAS DA SAÚDE") || uUpper.includes("CIENCIAS DA SAUDE")) return "CCS";
+        if (uUpper === "CCSH" || uUpper.includes("SOCIAIS E HUMANAS")) return "CCSH";
+        if (uUpper === "CE" || uUpper.includes("CENTRO DE EDUCAÇÃO") || uUpper.includes("CENTRO DE EDUCACAO")) return "CE";
+        if (uUpper === "CEFD" || uUpper.includes("EDUCAÇÃO FÍSICA") || uUpper.includes("EDUCACAO FISICA")) return "CEFD";
+        if (uUpper === "CAL" || uUpper.includes("ARTES E LETRAS")) return "CAL";
+
+        return uUpper;
     }
 
     // === PRE-VISUALIZACAO E EXPORTACAO PARA WORDPRESS ===
@@ -5173,7 +5226,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 // 4. Unidades
                 const unidsData = {};
                 filteredProjects.forEach(p => {
-                    const key = p.unid_norm || 'OUTRA';
+                    const key = normalizeUnidade(p.unid_norm || p.unidade) || 'OUTRA';
                     if (!unidsData[key]) unidsData[key] = { val: 0 };
                     unidsData[key].val += (p.valor || 0);
                 });

@@ -338,6 +338,66 @@ function Normalize-Financiador($val) {
     return $s
 }
 
+function Normalize-Unidade($val) {
+    if ($null -eq $val -or $val -eq "") { return "OUTRA" }
+    
+    $u = (Fix-Encoding $val).Trim()
+    $u = $u -replace "\s+", " "
+    
+    if ($u -eq "-" -or $u -eq "---" -or $u -eq "--" -or $u.ToUpper() -eq "OUTRA") {
+        return "OUTRA"
+    }
+    
+    $uUpper = $u.ToUpper()
+    
+    # 1. CTISM (Colégio Técnico Industrial de Santa Maria) - deve ser verificado antes de CT
+    if ($uUpper -like "*CTISM*") {
+        return "CTISM"
+    }
+    
+    # 2. CT e variações (ex: "CT 033153/2026-23", "CT/UFSM", "CT-UFSM", etc.)
+    if ($uUpper -eq "CT" -or $uUpper -match "^CT[\s\/-]" -or $uUpper -like "*CENTRO DE TECNOLOGIA*") {
+        return "CT"
+    }
+    
+    # 3. Colégio Politécnico e variações (POLI, Politécnico, etc.)
+    if ($uUpper -like "*POLI*" -or $uUpper -like "*POLIT*") {
+        return ("POLIT" + [char]0x00C9 + "CNICO")
+    }
+    
+    # 4. Campus Frederico Westphalen (UFSM-FW, FW, UFSM - FW, DETA/FW)
+    if ($uUpper -like "*FW*" -or $uUpper -like "*FREDERICO*") {
+        return "UFSM-FW"
+    }
+    
+    # 5. Campus Cachoeira do Sul (UFSM-CS, CS, UFSM/CS)
+    if ($uUpper -eq "CS" -or $uUpper -eq "UFSM-CS" -or $uUpper -eq "UFSM/CS" -or $uUpper -like "*CACHOEIRA*") {
+        return "UFSM-CS"
+    }
+    
+    # 6. Campus Palmeira das Missões (UFSM-PM, PM, UFSM/PM)
+    if ($uUpper -eq "PM" -or $uUpper -eq "UFSM-PM" -or $uUpper -eq "UFSM/PM" -or $uUpper -like "*PALMEIRA*") {
+        return "UFSM-PM"
+    }
+    
+    # 7. Reitoria e Gabinete do Reitor
+    if ($uUpper -like "*REITORIA*" -or $uUpper -like "*GABINETE*") {
+        return "REITORIA"
+    }
+    
+    # 8. Centros de Ensino regulares
+    if ($uUpper -eq "CCR" -or $uUpper -like "*CI" + [char]0x00CA + "NCIAS RURAIS*" -or $uUpper -like "*CIENCIAS RURAIS*") { return "CCR" }
+    if ($uUpper -eq "CCNE" -or $uUpper -like "*NATURAIS E EXATAS*") { return "CCNE" }
+    if ($uUpper -eq "CCS" -or $uUpper -like "*CI" + [char]0x00CA + "NCIAS DA SA" + [char]0x00DA + "DE*" -or $uUpper -like "*CIENCIAS DA SAUDE*") { return "CCS" }
+    if ($uUpper -eq "CCSH" -or $uUpper -like "*SOCIAIS E HUMANAS*") { return "CCSH" }
+    if ($uUpper -eq "CE" -or $uUpper -like "*CENTRO DE EDUCA*" -or $uUpper -like "*CENTRO DE EDUCACAO*") { return "CE" }
+    if ($uUpper -eq "CEFD" -or $uUpper -like "*EDUCA*" + "SICA*" -or $uUpper -like "*EDUCACAO FISICA*") { return "CEFD" }
+    if ($uUpper -eq "CAL" -or $uUpper -like "*ARTES E LETRAS*") { return "CAL" }
+    
+    return $uUpper
+}
+
+
 function Clean-Text($val) {
     if ($null -eq $val -or $val.Trim() -eq "---" -or $val.Trim() -eq "--- ") {
         return ""
@@ -491,11 +551,7 @@ $Projects = foreach ($row in $RawCsv) {
     elseif ($sitUpper -like "*CANC*" -or $sitUpper -like "*ARQ*" -or $sitUpper -like "*SUSP*") { $sitNorm = "Cancelado/Suspenso" }
 
     # Normalizar Unidade
-    $unidNorm = $unidade.ToUpper()
-    if ($unidNorm -like "*REITORIA*") { $unidNorm = "REITORIA" }
-    elseif ($unidNorm -like "*POLI*" -or $unidNorm -like "*COLÉGIO POLITÉCNICO*") { $unidNorm = "POLITÉCNICO" }
-    elseif ($unidNorm -like "*CTISM*") { $unidNorm = "CTISM" }
-    elseif ($unidNorm -like "*FW*" -or $unidNorm -like "*FREDERICO*") { $unidNorm = "UFSM-FW" }
+    $unidNorm = Normalize-Unidade $unidade
 
     # O ano e mês devem ser filtrados pela coluna AB (Vigência Inicial)
     $anoVigencia = Get-YearFromVigencia $vigencia_inicial
