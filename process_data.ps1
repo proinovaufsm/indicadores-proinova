@@ -552,6 +552,7 @@ $Projects = foreach ($row in $RawCsv) {
 
     # Normalizar Unidade
     $unidNorm = Normalize-Unidade $unidade
+    $unidade = $unidNorm
 
     # O ano e mês devem ser filtrados pela coluna AB (Vigência Inicial)
     $anoVigencia = Get-YearFromVigencia $vigencia_inicial
@@ -576,7 +577,7 @@ $Projects = foreach ($row in $RawCsv) {
         nup                     = Clean-Text $nup
         coordenador             = Normalize-CoordinatorName (Clean-Text $coordenador)
         contato_coordenador     = Clean-Text $contato_coordenador
-        unidade                 = $unidade
+        unidade                 = $unidNorm
         unid_norm               = $unidNorm
         subunidade              = Clean-Text $subunidade
         fiscal                  = Clean-Text $fiscal

@@ -72,11 +72,11 @@ document.addEventListener('DOMContentLoaded', () => {
         }
 
         // 0. Invalidação de Cache para Migração e Normalização de Unidades
-        if (!localStorage.getItem('unidade_migration_v5')) {
+        if (localStorage.getItem('unidade_migration_v6') !== 'done') {
             localStorage.removeItem('default_projects_data');
             localStorage.removeItem('uploaded_projects_data');
             localStorage.removeItem('sheet_projects_data');
-            localStorage.setItem('unidade_migration_v5', 'true');
+            localStorage.setItem('unidade_migration_v6', 'done');
             console.log("Cache de dados antigos invalidado para normalização de unidades (unificação de CT e centros).");
         }
 
@@ -93,12 +93,14 @@ document.addEventListener('DOMContentLoaded', () => {
                         : p.titulo;
                     const extractedAno = getYearFromVigencia(p.vigencia_inicial);
                     const extractedMes = getMonthFromVigencia(p.vigencia_inicial);
+                    const normU = normalizeUnidade(p.unid_norm || p.unidade);
                     return {
                         ...p,
                         ano: extractedAno,
                         mes: extractedMes,
                         titulo: cleanTitle,
-                        unid_norm: normalizeUnidade(p.unid_norm || p.unidade),
+                        unidade: normU,
+                        unid_norm: normU,
                         financiador: normalizeFinanciador(p.financiador)
                     };
                 });
@@ -123,7 +125,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     tipo_projeto: fixEncoding(p.tipo_projeto),
                     tipo_projeto_norm: fixEncoding(p.tipo_projeto_norm),
                     fundacao: fixEncoding(p.fundacao),
-                    unidade: fixEncoding(p.unidade),
+                    unidade: normalizeUnidade(p.unidade),
                     unid_norm: normalizeUnidade(p.unid_norm || p.unidade),
                     subunidade: fixEncoding(p.subunidade),
                     fiscal: fixEncoding(p.fiscal),
@@ -1390,8 +1392,8 @@ document.addEventListener('DOMContentLoaded', () => {
                 valorData = valorTrim.map(v => v / 1000000); // Em milhões
 
                 // Atualizar títulos no HTML dinamicamente
-                const titleEl = document.querySelector('#sec-visao-geral .chart-card-full h3');
-                const subtitleEl = document.querySelector('#sec-visao-geral .chart-card-full .chart-header div');
+                const titleEl = document.getElementById('titulo-evolucao');
+                const subtitleEl = document.getElementById('subtitulo-evolucao');
                 if (titleEl) titleEl.innerText = `Evolução Trimestral: Volume e Captação (${selectedYear})`;
                 if (subtitleEl) subtitleEl.innerText = "Trimestre de início do contrato";
             } else {
@@ -1411,8 +1413,8 @@ document.addEventListener('DOMContentLoaded', () => {
                 valorData = valorMensal.map(v => v / 1000000); // Em milhões
 
                 // Atualizar títulos no HTML dinamicamente
-                const titleEl = document.querySelector('#sec-visao-geral .chart-card-full h3');
-                const subtitleEl = document.querySelector('#sec-visao-geral .chart-card-full .chart-header div');
+                const titleEl = document.getElementById('titulo-evolucao');
+                const subtitleEl = document.getElementById('subtitulo-evolucao');
                 if (titleEl) titleEl.innerText = `Evolução Mensal: Volume e Captação (${selectedYear})`;
                 if (subtitleEl) subtitleEl.innerText = "Mês de início do contrato";
             }
@@ -1448,8 +1450,8 @@ document.addEventListener('DOMContentLoaded', () => {
             valorData = anosOrdenados.map(ano => anosData[ano].val / 1000000); // Em milhões
 
             // Atualizar títulos no HTML dinamicamente
-            const titleEl = document.querySelector('#sec-visao-geral .chart-card-full h3');
-            const subtitleEl = document.querySelector('#sec-visao-geral .chart-card-full .chart-header div');
+            const titleEl = document.getElementById('titulo-evolucao');
+            const subtitleEl = document.getElementById('subtitulo-evolucao');
             if (titleEl) titleEl.innerText = "Evolução Anual: Volume e Captação";
             if (subtitleEl) subtitleEl.innerText = "Ano de início do contrato";
         }
@@ -2107,7 +2109,7 @@ document.addEventListener('DOMContentLoaded', () => {
                         tipo_projeto: fixEncoding(p.tipo_projeto),
                         tipo_projeto_norm: fixEncoding(p.tipo_projeto_norm),
                         fundacao: fixEncoding(p.fundacao),
-                        unidade: fixEncoding(p.unidade),
+                        unidade: normalizeUnidade(p.unidade),
                         unid_norm: normalizeUnidade(p.unid_norm || p.unidade),
                         subunidade: fixEncoding(p.subunidade),
                         fiscal: fixEncoding(p.fiscal),
@@ -2338,7 +2340,7 @@ document.addEventListener('DOMContentLoaded', () => {
                         situacao_norm: fixEncoding(sitNorm),
                         nup: fixEncoding((idxMapProj.nup !== -1 && row[idxMapProj.nup]) ? row[idxMapProj.nup].toString().trim() : ""),
                         coordenador: normalizeCoordinatorName((idxMapProj.coordenador !== -1 && row[idxMapProj.coordenador]) ? row[idxMapProj.coordenador].toString().trim() : ""),
-                        unidade: fixEncoding(unidade.toString().trim()),
+                        unidade: unidNorm,
                         unid_norm: unidNorm,
                         subunidade: fixEncoding((idxMapProj.subunidade !== -1 && row[idxMapProj.subunidade]) ? row[idxMapProj.subunidade].toString().trim() : ""),
                         fiscal: fixEncoding((idxMapProj.fiscal !== -1 && row[idxMapProj.fiscal]) ? row[idxMapProj.fiscal].toString().trim() : ""),
@@ -2481,7 +2483,7 @@ document.addEventListener('DOMContentLoaded', () => {
                                     tipo_projeto: fixEncoding(p.tipo_projeto),
                                     tipo_projeto_norm: fixEncoding(p.tipo_projeto_norm),
                                     fundacao: fixEncoding(p.fundacao),
-                                    unidade: fixEncoding(p.unidade),
+                                    unidade: normalizeUnidade(p.unidade),
                                     unid_norm: normalizeUnidade(p.unid_norm || p.unidade),
                                     subunidade: fixEncoding(p.subunidade),
                                     fiscal: fixEncoding(p.fiscal),
@@ -3086,7 +3088,7 @@ document.addEventListener('DOMContentLoaded', () => {
                         situacao_norm: fixEncoding(sitNorm),
                         nup: fixEncoding((idxMap.nup !== -1 && row[idxMap.nup]) ? row[idxMap.nup].toString().trim() : ""),
                         coordenador: normalizeCoordinatorName((idxMap.coordenador !== -1 && row[idxMap.coordenador]) ? row[idxMap.coordenador].toString().trim() : ""),
-                        unidade: fixEncoding(unidade.toString().trim()),
+                        unidade: unidNorm,
                         unid_norm: unidNorm,
                         subunidade: fixEncoding((idxMap.subunidade !== -1 && row[idxMap.subunidade]) ? row[idxMap.subunidade].toString().trim() : ""),
                         fiscal: fixEncoding((idxMap.fiscal !== -1 && row[idxMap.fiscal]) ? row[idxMap.fiscal].toString().trim() : ""),
@@ -4665,7 +4667,28 @@ document.addEventListener('DOMContentLoaded', () => {
         const initialPiConcedidos = ${databasePiConcedidosJSON};
 
         (function() {
-            let projects = initialProjectsData;
+            function normalizeUnidade(val) {
+                if (!val) return "OUTRA";
+                let u = val.toString().replace(/\s+/g, ' ').trim().toUpperCase();
+                if (!u || u === '-' || u === '---' || u === 'OUTRA') return "OUTRA";
+                if (u.includes("CTISM")) return "CTISM";
+                if (/^CT\b/.test(u) || u.startsWith("CT ") || u.startsWith("CT/") || u.startsWith("CT-") || u.includes("CENTRO DE TECNOLOGIA")) return "CT";
+                if (u.includes("POLI") || u.includes("POLITÉCNICO") || u.includes("POLITECNICO")) return "POLITÉCNICO";
+                if (u.includes("FW") || u.includes("FREDERICO")) return "UFSM-FW";
+                if (u === "CS" || u === "UFSM-CS" || u === "UFSM/CS" || u.includes("CACHOEIRA")) return "UFSM-CS";
+                if (u === "PM" || u === "UFSM-PM" || u === "UFSM/PM" || u.includes("PALMEIRA")) return "UFSM-PM";
+                if (u.includes("REITORIA") || u.includes("GABINETE")) return "REITORIA";
+                if (u === "CCR" || u.includes("CIÊNCIAS RURAIS") || u.includes("CIENCIAS RURAIS")) return "CCR";
+                if (u === "CCNE" || u.includes("NATURAIS E EXATAS")) return "CCNE";
+                if (u === "CCS" || u.includes("CIÊNCIAS DA SAÚDE") || u.includes("CIENCIAS DA SAUDE")) return "CCS";
+                if (u === "CCSH" || u.includes("SOCIAIS E HUMANAS")) return "CCSH";
+                if (u === "CE" || u.includes("CENTRO DE EDUCAÇÃO") || u.includes("CENTRO DE EDUCACAO")) return "CE";
+                if (u === "CEFD" || u.includes("EDUCAÇÃO FÍSICA") || u.includes("EDUCACAO FISICA")) return "CEFD";
+                if (u === "CAL" || u.includes("ARTES E LETRAS")) return "CAL";
+                return u;
+            }
+
+            let projects = initialProjectsData.map(p => ({ ...p, unidade: normalizeUnidade(p.unidade), unid_norm: normalizeUnidade(p.unid_norm || p.unidade) }));
             let ganhos = initialGanhosData;
             let piData = initialPiData;
             let piConcedidos = initialPiConcedidos;
